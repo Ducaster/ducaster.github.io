@@ -1,0 +1,5 @@
+/* 테마 기본값(5rem) 대신 헤더 글자 높이에 맞춘 크기 */
+.logo svg { width: 2.25rem; height: 2.25rem; }
+
+/* 카테고리 미리보기 카드에서는 태그 줄을 숨겨 요약이 먼저 보이게 함 (글 페이지에는 그대로 표시) */
+.category-preview .article-link--card .flex-row.flex-wrap:has(> a) { display: none; }

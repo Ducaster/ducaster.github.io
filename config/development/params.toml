@@ -1,0 +1,3 @@
+# hugo server에서만 홈 화면 레이아웃 6종을 바꿔 보는 미리보기를 켭니다. 레이아웃을 정하면 이 파일을 지우세요.
+[homepage]
+  layoutSwitcher = true
