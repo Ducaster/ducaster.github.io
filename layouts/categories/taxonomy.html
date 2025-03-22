@@ -1,0 +1,22 @@
+{{ define "main" }}
+  <header class="mt-5">
+    <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
+  </header>
+  {{/* 카테고리마다 최근 글 3편을 카드로 미리 보여 준다 (테마 기본은 이름 버튼만 나열) */}}
+  {{ range .Data.Terms.ByCount }}
+    <section class="mt-12">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral">
+          <a class="hover:underline" href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a>
+          <span class="text-base font-normal text-neutral-500 dark:text-neutral-400">{{ .Count }}</span>
+        </h2>
+        <a class="text-sm font-semibold text-primary-600 hover:underline dark:text-primary-400" href="{{ .Page.RelPermalink }}">전체 글 보기 →</a>
+      </div>
+      <div class="category-preview mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {{ range first 3 .Pages.ByDate.Reverse }}
+          {{ partial "article-link/card.html" . }}
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}
