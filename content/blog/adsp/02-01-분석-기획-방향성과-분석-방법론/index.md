@@ -130,7 +130,7 @@ flowchart LR
 **CRISP-DM(Cross Industry Standard Process for Data Mining)** 은 1996년 유럽연합의 ESPRIT 프로젝트에서 시작해 1999년 첫 버전이 나온 방법론이다. 단계, 일반화 태스크, 세분화 태스크, 프로세스 실행의 **4레벨** 구조이고, **6단계**로 진행된다. 단계 사이를 오가는 피드백이 있다는 점이 특징이다.
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   BU["업무 이해"] <--> DU["데이터 이해"]
   DU --> DP["데이터 준비"]
   DP <--> M["모델링"]
@@ -168,7 +168,7 @@ flowchart LR
 빅데이터 분석 방법론은 단계(Phase), 태스크(Task), 스텝(Step)의 3계층, 5단계로 구성된다.
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   P["분석 기획<br>Planning"] --> R["데이터 준비<br>Preparing"]
   R --> A["데이터 분석<br>Analyzing"]
   A -.->|"데이터가 부족하면"| R

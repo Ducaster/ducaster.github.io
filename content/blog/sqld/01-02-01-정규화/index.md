@@ -55,7 +55,7 @@ series_order: 7
 ## 3. 정규형
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   U["비정규형"] -->|"반복 속성 · 다중값 제거"| N1["제1정규형<br>1NF"]
   N1 -->|"부분 함수 종속 제거"| N2["제2정규형<br>2NF"]
   N2 -->|"이행 함수 종속 제거"| N3["제3정규형<br>3NF"]

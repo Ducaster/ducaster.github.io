@@ -31,7 +31,7 @@ v1.33 후속 글들이 이어서 나왔다. 그중 세 가지를 골랐다. 지�
 ## 1. in-place 리사이즈 써 보기
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   U["kubectl patch<br>--subresource resize"] --> S["spec.containers[].resources<br>(원하는 값)"]
   S --> K["kubelet이<br>cgroup 값 변경"]
   K --> T["status.containerStatuses[].resources<br>(실제 값)"]

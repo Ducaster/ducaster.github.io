@@ -34,7 +34,7 @@ series_order: 6
 ## 1. 파드가 노드에 놓이기까지
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   C["파드 생성 요청"] --> A{"어드미션<br>LimitRange·ResourceQuota<br>Pod Security"}
   A -->|"위반"| R["생성 거절<br>(Forbidden)"]
   A -->|"통과"| P["Pending<br>(노드 미정)"]

@@ -122,7 +122,7 @@ SELECT COUNT(*) AS CNT, SUM(SAL) AS S, MAX(SAL) AS M FROM EMP WHERE DEPTNO = 40;
 ## 5. SELECT 문의 논리적 실행 순서
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   F["① FROM<br>테이블 가져오기"] --> W["② WHERE<br>행 거르기"]
   W --> G["③ GROUP BY<br>그룹 만들기"]
   G --> H["④ HAVING<br>그룹 거르기"]

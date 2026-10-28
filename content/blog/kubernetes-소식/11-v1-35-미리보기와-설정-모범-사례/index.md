@@ -106,7 +106,7 @@ metadata:
 이번 글에서 제일 쓸모 있어 보인 요령이다. 컨트롤러는 라벨 셀렉터로 자기 파드를 찾으니, 이상한 파드 하나에서 라벨을 떼면 컨트롤러가 그 파드를 놓아주고 새 파드를 하나 더 만든다. 서비스 셀렉터도 같은 라벨이라 트래픽도 끊긴다. 남은 파드는 로그를 보고 exec로 들어가 살펴본 뒤 직접 지운다.
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   subgraph before["떼기 전"]
     direction TB
     RS1["ReplicaSet web<br>selector app=web<br>원하는 수 3"] --> P1["web-a<br>app=web"]

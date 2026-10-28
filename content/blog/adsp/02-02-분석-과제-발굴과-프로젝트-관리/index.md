@@ -29,11 +29,11 @@ series_order: 5
 {{< mermaid >}}
 flowchart LR
   subgraph TD["하향식 접근: 수렴"]
-    direction LR
+    direction TB
     T1["문제 탐색"] --> T2["문제 정의"] --> T3["해결 방안 탐색"] --> T4["타당성 검토"]
   end
   subgraph BU["상향식 접근: 발산"]
-    direction LR
+    direction TB
     B1["데이터 관찰"] --> B2["비지도 학습<br>프로토타이핑"] --> B3["새로운 문제 발견"]
   end
   BU -->|"아이디어 공급"| TD

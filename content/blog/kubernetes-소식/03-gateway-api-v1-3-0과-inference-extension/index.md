@@ -74,7 +74,7 @@ Standard와 Experimental 채널의 차이가 이번에 더 분명해졌다. Stan
 LLM 추론 요청은 일반 웹 요청과 다르다. 오래 걸리고, GPU 메모리를 많이 쓰고, 모델 서버마다 대기열 길이와 캐시 상태가 다르다. 라운드 로빈으로 나누면 한 서버에 몰려 지연이 커진다. 이 확장은 기존 Gateway와 HTTPRoute 모델을 그대로 두고 중간에 '어느 파드가 지금 가장 여유 있나'를 고르는 단계를 넣는다.
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   C["클라이언트<br>POST /completions"] --> G["Gateway<br>(Envoy 등)"]
   G -->|"HTTPRoute 매칭"| P["InferencePool<br>(모델 서버 파드 묶음)"]
   P --> E["Endpoint Selection Extension<br>대기열 길이, 메모리, 로드된 어댑터 확인"]

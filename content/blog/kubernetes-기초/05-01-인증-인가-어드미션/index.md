@@ -31,7 +31,7 @@ series_order: 14
 ## 1. 요청이 지나는 세 관문
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   R["kubectl,<br>파드 안의 앱"] --> A1{"인증<br>누구인가?"}
   A1 -->|"모르는 사람"| X1["401 Unauthorized"]
   A1 -->|"누군지 확인됨"| A2{"인가<br>이 일을 해도 되나?"}

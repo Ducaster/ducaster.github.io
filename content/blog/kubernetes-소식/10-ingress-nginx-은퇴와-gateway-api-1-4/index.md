@@ -18,7 +18,7 @@ series:
 series_order: 10
 ---
 
-11월 11일 공식 블로그에 Ingress NGINX 은퇴 발표가 올라왔다. 작년 12월 기초 공부 때 kind에 ingress-nginx를 깔고 /foo, /bar를 나눠 본 게 내 첫 인그레스 실습이었고, 3주 전에 정리한 '흔한 실수 7가지' 글에서도 처음엔 Ingress-NGINX 같은 기본 컨트롤러로 시작하라고 했다. 그래서 더 놀랐다. 닷새 전에는 Gateway API 1.4 소개 글도 나와서, 옮겨 갈 곳으로 꼽히는 Gateway API까지 같이 정리했다.
+11월 11일 공식 블로그에 Ingress NGINX 은퇴 발표가 올라왔다. 작년 12월 기초 공부 때 kind에 ingress-nginx를 깔고 /foo, /bar를 나눠 본 게 내 첫 인그레스 실습이었고, 지난달에 정리한 '흔한 실수 7가지' 글에서도 처음엔 Ingress-NGINX 같은 기본 컨트롤러로 시작하라고 했다. 그래서 더 놀랐다. 닷새 전에는 Gateway API 1.4 소개 글도 나와서, 옮겨 갈 곳으로 꼽히는 Gateway API까지 같이 정리했다.
 
 ## 요약
 

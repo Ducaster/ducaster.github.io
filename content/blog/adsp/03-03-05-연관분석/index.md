@@ -87,7 +87,7 @@ series_order: 18
 **Apriori 알고리즘**은 최소 지지도를 정하고, 그 이상인 **빈발 항목집합(frequent itemset)** 만 남기며 크기를 1개, 2개, 3개로 키워 간다.
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   A["최소 지지도 정하기"] --> B["항목 1개짜리 중<br>빈발 항목 찾기"]
   B --> C["빈발 항목끼리 조합해<br>후보 2개짜리 만들기"]
   C --> D["최소 지지도 미만<br>후보 제거"]

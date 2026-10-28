@@ -136,7 +136,7 @@ _`plot(hw)`와 `rect.hclust(hw, k = 4)`. 네 개의 상자가 4개 군집이고,
 **k-평균 군집(k-means clustering)** 은 대표적인 **비계층적(분할적) 군집** 방법이다.
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   A["1. 군집 수 k 정하기"] --> B["2. 초기 중심 k개<br>무작위 선택"]
   B --> C["3. 각 개체를 가장 가까운<br>중심의 군집에 배정"]
   C --> D["4. 군집별 평균으로<br>중심 다시 계산"]

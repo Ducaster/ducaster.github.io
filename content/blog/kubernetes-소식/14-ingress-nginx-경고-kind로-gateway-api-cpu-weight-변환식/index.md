@@ -49,7 +49,7 @@ series_order: 14
 cloud-provider-kind는 kind 클러스터에 클라우드가 있는 것처럼 흉내 내 주는 도구다. LoadBalancer 서비스에 주소를 주고, Gateway API 컨트롤러도 들어 있다. kind 클러스터 바깥에서 도커 컨테이너로 돈다.
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   subgraph host["내 컴퓨터의 도커"]
     direction TB
     CPK["cloud-provider-kind<br>컨테이너<br>LoadBalancer 컨트롤러<br>Gateway 컨트롤러"]

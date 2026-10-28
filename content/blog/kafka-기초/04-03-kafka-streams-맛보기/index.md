@@ -19,7 +19,7 @@ series:
 series_order: 13
 ---
 
-생태계 편 마지막. Kafka Streams는 별도 클러스터가 아니라 자바 라이브러리라서, 내 애플리케이션 안에서 토픽을 읽고 가공해서 다시 토픽에 쓴다. 카프카에 들어 있는 단어 세기 예제(WordCountDemo)를 돌렸는데, 한글로 넣은 단어가 전부 빠져서 이유를 찾아봤다.
+Kafka Streams는 별도 클러스터가 아니라 자바 라이브러리라서, 내 애플리케이션 안에서 토픽을 읽고 가공해서 다시 토픽에 쓴다. 카프카에 들어 있는 단어 세기 예제(WordCountDemo)를 돌렸는데, 한글로 넣은 단어가 전부 빠져서 이유를 찾아봤다.
 
 ## 요약
 
@@ -76,7 +76,7 @@ jshell> Arrays.toString("kafka streams 처음 써 보기".split("\\W+"))
 ## 3. 토폴로지와 내부 토픽
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   I["streams-plaintext-input<br>(KStream)"] --> F["flatMapValues<br>소문자로, 단어로 쪼개기"]
   F --> G["groupBy(단어)<br>키를 단어로 바꿈"]
   G --> R["repartition 토픽<br>단어별로 다시 나눔"]

@@ -49,7 +49,7 @@ flowchart TB
     M3 --> V
   end
   subgraph BOO["부스팅: 차례로 만들며 보완"]
-    direction LR
+    direction TB
     N1["모형 1"] -->|"틀린 데이터에<br>가중치"| N2["모형 2"] -->|"틀린 데이터에<br>가중치"| N3["모형 3"] --> W["가중 결합"]
   end
 {{< /mermaid >}}

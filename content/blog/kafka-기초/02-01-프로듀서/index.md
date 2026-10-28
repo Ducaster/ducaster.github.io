@@ -20,7 +20,7 @@ series:
 series_order: 6
 ---
 
-프로듀서와 컨슈머 편 첫 번째. 프로듀서가 send()를 부르면 실제로 무슨 일이 일어나는지 정리하고, acks 값을 바꿔 가며 kafka-producer-perf-test로 처리량과 지연을 재 봤다. 기본값은 기억에 기대지 않고 4.1.0 클라이언트 라이브러리에서 직접 뽑아 확인했다.
+프로듀서가 send()를 부르면 실제로 무슨 일이 일어나는지 정리하고, acks 값을 바꿔 가며 kafka-producer-perf-test로 처리량과 지연을 재 봤다. 기본값은 4.1.0 클라이언트 라이브러리에서 직접 뽑아 확인했다.
 
 ## 요약
 
@@ -76,7 +76,7 @@ producer buffer.memory = 33554432
 | retries | 사실상 무한 | 대신 delivery.timeout.ms(2분) 안에서만 재시도 |
 | compression.type | none | gzip, snappy, lz4, zstd 중 고를 수 있다 |
 
-retries가 21억이라 처음엔 놀랐는데, 실제 한도는 delivery.timeout.ms다. 2분 동안 성공 못 하면 실패로 끝난다.
+retries 기본값은 2147483647(약 21억)이라 사실상 무한이고, 실제 한도는 delivery.timeout.ms다. 2분 동안 성공 못 하면 실패로 끝난다.
 
 ## 3. 파티셔너
 

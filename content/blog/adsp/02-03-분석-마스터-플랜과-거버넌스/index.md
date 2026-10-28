@@ -212,11 +212,11 @@ flowchart TB
 {{< mermaid >}}
 flowchart LR
   subgraph S1["과제 발굴"]
-    direction LR
+    direction TB
     A1["분석 아이디어 발굴"] --> A2["분석 과제 후보 제안"] --> A3["분석 과제 확정"]
   end
   subgraph S2["과제 수행"]
-    direction LR
+    direction TB
     B1["팀 구성"] --> B2["분석 과제 실행"] --> B3["분석 과제 진행 관리"] --> B4["결과 공유와 개선"]
   end
   S1 --> S2

@@ -68,7 +68,7 @@ ROLLBACK TRANSACTION SP1;
 ```
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   A["INSERT A"] --> S1(["SAVEPOINT SP1"])
   S1 --> B["INSERT B"] --> S2(["SAVEPOINT SP2"])
   S2 --> C["DELETE A"]

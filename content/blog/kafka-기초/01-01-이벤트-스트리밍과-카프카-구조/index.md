@@ -19,7 +19,7 @@ series:
 series_order: 2
 ---
 
-기본 개념 첫 번째. 단어를 하나씩 파기 전에 카프카가 어떻게 생겼는지 전체 그림부터 그렸다. 공식 문서 Introduction과 Confluent의 Kafka 101 앞부분을 같이 읽었다.
+용어를 하나씩 보기 전에 카프카 전체 구조부터 그렸다. 공식 문서 Introduction과 Confluent의 Kafka 101 앞부분을 같이 읽었다.
 
 ## 요약
 
@@ -45,9 +45,9 @@ series_order: 2
 ## 2. 전체 구조
 
 {{< mermaid >}}
-flowchart LR
+flowchart TB
   subgraph producers["프로듀서"]
-    direction TB
+    direction LR
     P1["주문 서비스"]
     P2["결제 서비스"]
   end
@@ -62,7 +62,7 @@ flowchart LR
     C -.-> B3
   end
   subgraph consumers["컨슈머 그룹"]
-    direction TB
+    direction LR
     G1["shipping 그룹"]
     G2["analytics 그룹"]
   end
