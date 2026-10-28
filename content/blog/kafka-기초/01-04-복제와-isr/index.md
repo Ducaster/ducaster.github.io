@@ -115,7 +115,7 @@ cat c3/n1/replication-offset-checkpoint | grep strict
 	Topic: strict	Partition: 0	Leader: 1	Replicas: 1,2,3	Isr: 1,2	Elr: 3	LastKnownElr: 
 ```
 
-결국 acks=1은 '리더가 받았다'만 보장할 뿐이고, 컨슈머가 볼 수 있는지는 HW가 정한다는 걸 이번에 확실히 알았다.
+acks=1은 '리더가 받았다'만 보장하고, 컨슈머가 볼 수 있는지는 HW가 정한다.
 
 ## 4. 다시 살리고 리더 되돌리기
 

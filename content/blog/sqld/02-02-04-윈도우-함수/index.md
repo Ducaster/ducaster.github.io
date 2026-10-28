@@ -20,7 +20,7 @@ series:
 series_order: 23
 ---
 
-SQL 활용 네 번째, 윈도우 함수. RANK, DENSE_RANK, ROW_NUMBER의 차이와 WINDOWING 절(ROWS, RANGE)은 매회 나온다고 보면 된다. 결과는 예제 테이블로 실행한 그대로다.
+RANK, DENSE_RANK, ROW_NUMBER의 차이와 WINDOWING 절(ROWS, RANGE)은 매회 나온다고 보면 된다. 결과는 예제 테이블로 실행한 그대로다.
 
 ## 요약
 

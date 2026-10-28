@@ -18,7 +18,7 @@ series:
 series_order: 15
 ---
 
-SQL 기본 네 번째, WHERE 절. AND와 OR의 우선순위, LIKE 와일드카드, NULL 비교가 자주 나온다. 결과는 예제 테이블로 실행한 그대로다.
+WHERE 절에서는 AND와 OR의 우선순위, LIKE 와일드카드, NULL 비교가 자주 나온다. 결과는 예제 테이블로 실행한 그대로다.
 
 ## 요약
 
@@ -54,7 +54,7 @@ SQL 기본 네 번째, WHERE 절. AND와 OR의 우선순위, LIKE 와일드카�
 | 8 | AND |
 | 9 | OR |
 
-위 표는 Oracle 문서의 순서다. SQLD 수험서는 '괄호 → NOT → 비교 연산자 → AND → OR'로 줄여 정리하기도 한다. 어느 쪽으로 외우든 시험의 핵심은 **NOT → AND → OR** 순서다.
+위 표는 Oracle 문서의 순서다. SQLD 수험서는 '괄호 → NOT → 비교 연산자 → AND → OR'로 줄여 정리하기도 한다. 어느 쪽으로 외우든 시험에서는 **NOT → AND → OR** 순서만 맞으면 된다.
 
 ## 2. SQL 연산자
 

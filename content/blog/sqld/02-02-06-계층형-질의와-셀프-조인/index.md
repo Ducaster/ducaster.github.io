@@ -18,7 +18,7 @@ series:
 series_order: 25
 ---
 
-SQL 활용 여섯 번째, 계층형 질의와 셀프 조인. `CONNECT BY PRIOR`의 방향(순방향, 역방향)과 LEVEL 값, 가상 열과 함수가 자주 나온다. 예제는 관리자 관계가 4단계인 EMP 테이블이다.
+`CONNECT BY PRIOR`의 방향(순방향, 역방향)과 LEVEL 값, 가상 열과 함수가 자주 나온다. 예제는 관리자 관계가 4단계인 EMP 테이블이다.
 
 ## 요약
 

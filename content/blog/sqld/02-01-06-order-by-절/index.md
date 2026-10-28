@@ -16,7 +16,7 @@ series:
 series_order: 17
 ---
 
-SQL 기본 여섯 번째, ORDER BY. 정렬 기준을 지정하는 세 가지 방법, Oracle과 SQL Server에서 NULL이 어디로 정렬되는지가 단골이다. 결과는 예제 테이블로 직접 실행한 것.
+ORDER BY는 정렬 기준을 지정하는 세 가지 방법, Oracle과 SQL Server에서 NULL이 어디로 정렬되는지가 단골이다. 결과는 예제 테이블로 직접 실행한 것.
 
 ## 요약
 

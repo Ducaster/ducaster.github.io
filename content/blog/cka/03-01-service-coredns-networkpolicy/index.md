@@ -19,7 +19,7 @@ series:
 series_order: 7
 ---
 
-서비스와 네트워킹(20%)의 첫 정리. 범위의 '파드 간 연결 이해', 'ClusterIP·NodePort·LoadBalancer와 엔드포인트', 'CoreDNS 이해와 사용', 'NetworkPolicy 정의와 적용'을 묶었다. NetworkPolicy는 이번 개편에서 '정의하고 적용하라'로 문구가 세졌다. 직접 써서 막고 여는 문제가 나온다고 보고, AND와 OR 차이를 그림으로 정리했다.
+서비스와 네트워킹(20%) 범위 중 '파드 간 연결 이해', 'ClusterIP·NodePort·LoadBalancer와 엔드포인트', 'CoreDNS 이해와 사용', 'NetworkPolicy 정의와 적용'을 묶었다. NetworkPolicy는 이번 개편에서 '정의하고 적용하라'로 문구가 세졌다. 직접 써서 막고 여는 문제가 나온다고 보고, AND와 OR 차이를 그림으로 정리했다.
 
 ## 요약
 

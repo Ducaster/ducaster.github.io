@@ -20,7 +20,7 @@ series:
 series_order: 14
 ---
 
-1월 말에 사흘 연속으로 읽을 만한 글이 나왔다. 운영위원회와 보안대응위원회가 같이 낸 Ingress NGINX 성명, kind에서 Gateway API를 띄워 보는 실습 글, 그리고 cgroup v1 CPU shares를 v2 CPU weight로 바꾸는 식이 바뀌었다는 글이다. 11월에 Ingress를 Gateway API로 옮기면서 구현체가 없어 gatewayClassName을 example로 비워 뒀는데, 이번 실습 글 덕분에 그 매니페스트를 실제로 띄워 봤다.
+1월 말에 사흘 연속으로 읽을 만한 글이 나왔다. 운영위원회와 보안대응위원회가 같이 낸 Ingress NGINX 성명이 있었고, kind에서 Gateway API를 띄워 보는 실습 글과 cgroup v1 CPU shares를 v2 CPU weight로 바꾸는 식이 바뀌었다는 글도 있었다. 11월에 Ingress를 Gateway API로 옮기면서 구현체가 없어 gatewayClassName을 example로 비워 뒀는데, 이번 실습 글 덕분에 그 매니페스트를 실제로 띄워 봤다.
 
 ## 요약
 

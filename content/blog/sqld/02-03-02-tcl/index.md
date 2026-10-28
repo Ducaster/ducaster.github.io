@@ -19,7 +19,7 @@ series:
 series_order: 29
 ---
 
-관리 구문 두 번째, TCL. SAVEPOINT와 ROLLBACK이 섞인 SQL을 주고 최종 결과를 맞히라는 문제, Oracle과 SQL Server의 자동 커밋 차이가 자주 나온다.
+SAVEPOINT와 ROLLBACK이 섞인 SQL을 주고 최종 결과를 맞히라는 문제, Oracle과 SQL Server의 자동 커밋 차이가 자주 나온다.
 
 ## 요약
 

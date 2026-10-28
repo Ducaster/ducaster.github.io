@@ -17,7 +17,7 @@ series:
 series_order: 8
 ---
 
-서비스와 네트워킹(20%) 정리. 범위는 'NetworkPolicy 기초', '서비스로 앱 접근 제공과 문제 해결', 'Ingress 규칙으로 앱 노출'이다. Service 종류, DNS 이름, 정책 문법(AND와 OR), Ingress 만들기는 CKA 때 다 정리해서, 오늘은 frontend, backend, db 3계층 앱에 정책을 처음부터 걸어 보는 연습과 '정책은 건드리지 말고 통하게 하라' 같은 문제 유형만 따로 모았다.
+서비스와 네트워킹(20%)의 범위는 'NetworkPolicy 기초', '서비스로 앱 접근 제공과 문제 해결', 'Ingress 규칙으로 앱 노출'이다. Service 종류, DNS 이름, 정책 문법(AND와 OR), Ingress 만들기는 CKA 때 다 정리해서, 오늘은 frontend, backend, db 3계층 앱에 정책을 처음부터 걸어 보는 연습과 '정책은 건드리지 말고 통하게 하라' 같은 문제 유형만 따로 모았다.
 
 ## 요약
 

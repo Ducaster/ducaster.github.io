@@ -82,7 +82,7 @@ nginx는 메모리를 거의 안 써서 96Mi로 줄여도 문제가 없었다. �
 | 관찰 | 리사이즈 전용 kubelet 지표와 파드 이벤트가 생겼다 |
 | 아직 안 되는 것 | swap, 정적 CPU Manager, 정적 Memory Manager와 같이 쓸 때. CPU, 메모리 말고 다른 리소스 |
 
-VPA의 InPlaceOrRecreate 모드도 beta가 됐다고 한다. 재미있었던 건 런타임 쪽 한계다. Java와 Python 런타임은 아직 재시작 없이 메모리 크기 변경을 지원하지 않는다고 한다. 컨테이너 limit은 바뀌어도 그 안의 런타임은 처음 크기 그대로일 수 있다는 뜻으로 이해했다.
+VPA의 InPlaceOrRecreate 모드도 beta가 됐다고 한다. 런타임 쪽 한계도 적혀 있었다. Java와 Python 런타임은 아직 재시작 없이 메모리 크기 변경을 지원하지 않는다고 한다. 컨테이너 limit은 바뀌어도 그 안의 런타임은 처음 크기 그대로일 수 있다는 뜻으로 이해했다.
 
 ## 4. Job managedBy GA
 

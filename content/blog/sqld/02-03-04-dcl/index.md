@@ -19,7 +19,7 @@ series:
 series_order: 31
 ---
 
-관리 구문 마지막이자 SQLD 정리의 마지막 글, DCL. WITH GRANT OPTION과 WITH ADMIN OPTION의 차이, 롤(ROLE)을 쓰는 이유가 자주 나온다.
+WITH GRANT OPTION과 WITH ADMIN OPTION의 차이, 롤(ROLE)을 쓰는 이유가 자주 나온다.
 
 ## 요약
 

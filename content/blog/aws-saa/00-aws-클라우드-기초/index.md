@@ -18,7 +18,7 @@ series:
 series_order: 1
 ---
 
-AWS SAA(Solutions Architect – Associate, SAA-C03) 공부 기록 첫 편. 도메인별로 들어가기 전에 리전과 가용 영역, 공동 책임 모델, Well-Architected처럼 모든 문제의 바탕이 되는 개념부터 정리했다. 시나리오형 문제를 읽는 요령도 같이 적어 두었다.
+AWS SAA(Solutions Architect – Associate, SAA-C03) 공부를 시작했다. 도메인별로 들어가기 전에 리전과 가용 영역, 공동 책임 모델, Well-Architected처럼 모든 문제의 바탕이 되는 개념부터 정리했다. 시나리오형 문제를 읽는 요령도 같이 적어 두었다.
 
 ## 이 시리즈의 기준
 

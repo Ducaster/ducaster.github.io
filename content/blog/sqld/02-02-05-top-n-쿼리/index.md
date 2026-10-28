@@ -19,7 +19,7 @@ series:
 series_order: 24
 ---
 
-SQL 활용 다섯 번째, Top N 쿼리. 문제는 거의 다 ROWNUM과 ORDER BY의 실행 순서 때문에 생기는 함정에서 나온다. 결과는 실제 실행 결과.
+Top N 쿼리 문제는 거의 다 ROWNUM과 ORDER BY의 실행 순서 때문에 생기는 함정에서 나온다. 결과는 실제 실행 결과.
 
 ## 요약
 

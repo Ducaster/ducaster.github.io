@@ -133,7 +133,7 @@ spec:
     hostname: dev.example.com
 ```
 
-지금까지는 인그레스든 게이트웨이든 TLS는 클러스터 입구에서 풀고, 안쪽은 평문으로 가는 게 보통이었다. 이걸 표준 API로 막을 수 있게 된 셈이다.
+지금까지는 인그레스든 게이트웨이든 TLS는 클러스터 입구에서 풀고, 안쪽은 평문으로 가는 게 보통이었다. 이걸 표준 API로 막을 수 있게 됐다.
 
 호환이 깨지는 변경도 두 가지 있었다. Standard GRPCRoute는 이제 spec 필드가 꼭 있어야 하고, Experimental CORS의 allowCredentials는 불리언 값만 받는다. 글을 쓸 당시 v1.4.0 적합성을 통과한 구현체는 Agent Gateway(kgateway와 함께), Airlock Microgateway, Envoy Gateway, GKE Gateway, Istio, kgateway, Traefik Proxy 일곱 개였다.
 

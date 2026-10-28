@@ -19,7 +19,7 @@ series:
 series_order: 18
 ---
 
-v1.36 후속 글이 4월 말부터 거의 매일 올라오고 있다. 이번에는 세 편을 골랐다. v1.36 릴리스 정리에서 표 한 줄로만 적은 Service externalIPs 지원 중단의 자세한 일정과 대안, API로는 지울 수 없게 파일로 넣는 어드미션 정책, 그리고 쿠버네티스 내장 타입의 검증 코드를 태그로 바꾼 선언적 검증 GA다.
+v1.36 후속 글이 4월 말부터 거의 매일 올라오고 있다. v1.36 릴리스 정리에서 표 한 줄로만 적은 Service externalIPs 지원 중단은 자세한 일정과 대안이 따로 나왔다. API로는 지울 수 없게 파일로 넣는 어드미션 정책 글과, 쿠버네티스 내장 타입의 검증 코드를 태그로 바꾼 선언적 검증 GA 글도 같이 읽었다.
 
 ## 요약
 
@@ -56,7 +56,7 @@ flowchart LR
 | 클라우드 밖 LB 컨트롤러(MetalLB 등) | 관리자가 IPAddressPool로 쓸 IP 범위를 정하고, 사용자는 type: LoadBalancer만 만든다 | 컨트롤러가 IP 중복을 막는다. loadBalancerIP로 특정 IP를 요청할 수도 있다 |
 | Gateway API | 관리자가 Gateway의 spec.addresses에 IP를 붙이고, 앱은 HTTPRoute로 붙는다 | Gateway를 만들 권한을 RBAC로 관리자에게만 줄 수 있다 |
 
-kubectl patch --subresource=status 방식이 재미있었다. 작년 5월에 in-place 리사이즈를 하면서 --subresource resize를 처음 썼는데, 같은 옵션으로 status만 따로 고칠 수 있다.
+status는 kubectl patch --subresource=status로 고친다. 작년 5월에 in-place 리사이즈를 하면서 처음 쓴 --subresource 옵션으로 status만 따로 고칠 수 있다.
 
 ## 2. 지울 수 없는 어드미션 정책
 
@@ -120,7 +120,7 @@ spec:
 | 바꿀 때 | 파일을 감시하다가 새 설정이 유효하면 통째로 바꾸고, 아니면 이전 설정을 유지하고 로그를 남긴다 |
 | 처음 시작할 때 | 파일 하나라도 잘못되면 API 서버가 아예 뜨지 않는다. 정책 없이 도는 것보다 낫다는 판단이다 |
 
-CKA 공부 때 /etc/kubernetes/manifests의 스태틱 파드를 API로 지워도 kubelet이 다시 띄우는 걸 보고 신기했는데, 같은 생각을 어드미션 정책에 적용한 셈이다. 고칠 때는 API가 아니라 노드의 파일을 고친다.
+CKA 공부 때 /etc/kubernetes/manifests의 스태틱 파드를 API로 지워도 kubelet이 다시 띄우는 걸 보고 신기했는데, 어드미션 정책도 같은 방식이다. 고칠 때는 API가 아니라 노드의 파일을 고친다.
 
 ## 3. 선언적 검증 GA
 

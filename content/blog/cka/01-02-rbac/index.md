@@ -19,7 +19,7 @@ series:
 series_order: 3
 ---
 
-클러스터 아키텍처·설치·구성의 두 번째 정리, RBAC. 개정 전이나 후나 꼭 나오는 단골이다. 개념은 단순한데 Role, ClusterRole, RoleBinding, ClusterRoleBinding 네 가지 조합이 헷갈려서 그림으로 정리했다.
+RBAC는 개정 전이나 후나 꼭 나오는 단골이다. 개념은 단순한데 Role, ClusterRole, RoleBinding, ClusterRoleBinding 네 가지 조합이 헷갈려서 그림으로 정리했다.
 
 ## 요약
 

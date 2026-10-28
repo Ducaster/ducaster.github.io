@@ -17,7 +17,7 @@ series:
 series_order: 18
 ---
 
-SQL 기본 일곱 번째, 조인. 여기서는 WHERE 절에 조인 조건을 쓰는 Oracle 방식만 보고, ANSI 표준 문법(INNER JOIN, OUTER JOIN 등)은 다음 글 '표준 조인'에서 따로 정리했다. 결과는 예제 테이블로 직접 실행한 것.
+여기서는 WHERE 절에 조인 조건을 쓰는 Oracle 방식만 보고, ANSI 표준 문법(INNER JOIN, OUTER JOIN 등)은 다음 글 '표준 조인'에서 따로 정리했다. 결과는 예제 테이블로 직접 실행한 것.
 
 ## 요약
 

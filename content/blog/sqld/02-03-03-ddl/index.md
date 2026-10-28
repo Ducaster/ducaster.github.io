@@ -19,7 +19,7 @@ series:
 series_order: 30
 ---
 
-관리 구문 세 번째, DDL. 제약 조건 종류와 특징, ALTER TABLE 문법의 Oracle·SQL Server 차이, CTAS로 복사할 때 어떤 제약 조건이 따라오는지가 자주 나온다.
+제약 조건 종류와 특징, ALTER TABLE 문법의 Oracle·SQL Server 차이, CTAS로 복사할 때 어떤 제약 조건이 따라오는지가 자주 나온다.
 
 ## 요약
 

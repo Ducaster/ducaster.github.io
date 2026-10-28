@@ -18,7 +18,7 @@ series:
 series_order: 11
 ---
 
-네트워크 네 번째이자 마지막. 서비스마다 NodePort나 LoadBalancer를 하나씩 열면 포트와 로드 밸런서가 서비스 수만큼 늘어난다. 인그레스는 입구를 하나만 두고, 도메인과 경로를 보고 뒤의 서비스로 나눠 준다. kind에서 ingress-nginx를 설치해 /foo와 /bar를 다른 서비스로 보내 봤다.
+서비스마다 NodePort나 LoadBalancer를 하나씩 열면 포트와 로드 밸런서가 서비스 수만큼 늘어난다. 인그레스는 입구를 하나만 두고, 도메인과 경로를 보고 뒤의 서비스로 나눠 준다. kind에서 ingress-nginx를 설치해 /foo와 /bar를 다른 서비스로 보내 봤다.
 
 ## 요약
 

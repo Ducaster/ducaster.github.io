@@ -97,7 +97,7 @@ spec:
 
 parentRefs는 지난번 kind 실습의 Gateway로 바꿨고, 규칙에 이름도 붙였다. 다만 cloud-provider-kind의 Gateway 구현이 RequestRedirect까지 지원하는지는 확인하지 못했다. GatewayClass status의 supportedFeatures 목록에서 봐야 한다.
 
-결국 이 글의 요지는 '옮기기 전에 지금 실제로 들어오는 요청을 봐라'였다. 설정 파일만 보고 옮기면 오타였던 /Header가 사실은 /headers 요청을 받고 있었다는 걸 알 수 없다. SIG Network는 이런 어노테이션과 동작 일부를 Ingress2Gateway 변환 도구에 넣고 있다고 한다. 글 끝에는 2월 27일 Gateway API 1.5가 나왔고 ListenerSet과 HTTPRoute CORS 필터가 정식이 됐다는 소식도 덧붙어 있었다.
+이 글의 요지는 '옮기기 전에 지금 실제로 들어오는 요청을 봐라'였다. 설정 파일만 보고 옮기면 오타였던 /Header가 사실은 /headers 요청을 받고 있었다는 걸 알 수 없다. SIG Network는 이런 어노테이션과 동작 일부를 Ingress2Gateway 변환 도구에 넣고 있다고 한다. 글 끝에는 2월 27일 Gateway API 1.5가 나왔고 ListenerSet과 HTTPRoute CORS 필터가 정식이 됐다는 소식도 덧붙어 있었다.
 
 ## 2. Node Readiness Controller
 

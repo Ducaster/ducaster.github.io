@@ -17,7 +17,7 @@ series:
 series_order: 16
 ---
 
-SQL 기본 다섯 번째, GROUP BY와 HAVING. WHERE와 HAVING의 차이, SELECT 문의 논리적 실행 순서, 집계 함수가 NULL과 빈 집합을 처리하는 방식이 자주 나온다. 결과는 예제 테이블로 직접 돌려 본 것.
+WHERE와 HAVING의 차이, SELECT 문의 논리적 실행 순서, 집계 함수가 NULL과 빈 집합을 처리하는 방식이 자주 나온다. 결과는 예제 테이블로 직접 돌려 본 것.
 
 ## 요약
 

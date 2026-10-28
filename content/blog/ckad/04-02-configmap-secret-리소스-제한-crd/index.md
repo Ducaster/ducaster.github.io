@@ -20,7 +20,7 @@ series:
 series_order: 7
 ---
 
-도메인 4 두 번째. 오후에 SecurityContext를 끝내고, 밤에는 CKA 때 본 ConfigMap·Secret, requests·limits, CRD를 앱 개발자 쪽 문제 모양으로 다시 훑었다. 개념은 CKA 정리 그대로라 여기에는 '이렇게 나오면 이렇게 푼다'만 모았다.
+오후에 SecurityContext를 끝내고, 밤에는 CKA 때 본 ConfigMap·Secret, requests·limits, CRD를 앱 개발자 쪽 문제 모양으로 다시 훑었다. 개념은 CKA 정리 그대로라 여기에는 '이렇게 나오면 이렇게 푼다'만 모았다.
 
 ## 요약
 

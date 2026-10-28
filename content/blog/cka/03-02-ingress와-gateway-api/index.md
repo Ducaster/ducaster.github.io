@@ -18,7 +18,7 @@ series:
 series_order: 8
 ---
 
-서비스와 네트워킹의 두 번째 정리. 범위의 'Ingress 컨트롤러와 Ingress 리소스 사용'과, 이번 개편에서 새로 들어온 'Gateway API로 인그레스 트래픽 관리'다. Gateway API는 처음 보는 리소스가 많아서, Ingress의 어느 부분이 어디로 갔는지 짝지어 외웠다. 기준 버전은 2025년 3월 현재 최신 안정판인 Gateway API v1.2.1(2024년 11월 출시)이다.
+범위의 'Ingress 컨트롤러와 Ingress 리소스 사용'과, 이번 개편에서 새로 들어온 'Gateway API로 인그레스 트래픽 관리'다. Gateway API는 처음 보는 리소스가 많아서, Ingress의 어느 부분이 어디로 갔는지 짝지어 외웠다. 기준 버전은 2025년 3월 현재 최신 안정판인 Gateway API v1.2.1(2024년 11월 출시)이다.
 
 ## 요약
 

@@ -18,7 +18,7 @@ series:
 series_order: 22
 ---
 
-SQL 활용 세 번째, 그룹 함수. ROLLUP, CUBE, GROUPING SETS가 각각 어떤 소계를 만들고 결과가 몇 행인지 묻는 문제가 많다. 행 수를 세기 쉽게 EMP에서 개발부(20)와 영업부(30)만 뽑아서 돌렸다.
+ROLLUP, CUBE, GROUPING SETS가 각각 어떤 소계를 만들고 결과가 몇 행인지 묻는 문제가 많다. 행 수를 세기 쉽게 EMP에서 개발부(20)와 영업부(30)만 뽑아서 돌렸다.
 
 ## 요약
 

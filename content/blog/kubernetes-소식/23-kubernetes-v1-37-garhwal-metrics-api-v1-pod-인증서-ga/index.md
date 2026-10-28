@@ -52,7 +52,7 @@ _각 릴리스 글의 머리말 숫자로 그렸다. v1.37은 alpha가 27개로 
 | in-place 리사이즈 | v1.35 GA | 자리가 없어 Deferred된 리사이즈를 위해 낮은 우선순위 파드를 밀어내는 스케줄러 선점(alpha) |
 | SELinuxMount | v1.37 미리보기 | stable. 볼륨을 같이 쓰는 파드의 SELinux 라벨이 다르면 seLinuxChangePolicy: Recursive |
 
-새로 눈에 띈 것도 있다. watch 캐시 초기화가 stable이 되면서 API 서버가 감당 못 할 list, watch 요청에 HTTP 429를 돌려준다. 직접 만든 컨트롤러가 있다면 Retry-After를 보고 지수 백오프로 다시 시도하게 해야 한다. 파드 단위 체크포인트와 복원(alpha)은 CRI에 CheckpointPod, RestorePod가 생긴 것이고, StatefulSet에도 디플로이먼트처럼 Recreate 전략(alpha)이 생겼다. StatefulSet maxUnavailable은 v1.36에서 버그(kubernetes#137409) 때문에 기본으로 꺼졌다가 다시 켜졌다.
+새로 생긴 것도 있다. watch 캐시 초기화가 stable이 되면서 API 서버가 감당 못 할 list, watch 요청에 HTTP 429를 돌려준다. 직접 만든 컨트롤러가 있다면 Retry-After를 보고 지수 백오프로 다시 시도하게 해야 한다. 파드 단위 체크포인트와 복원(alpha)은 CRI에 CheckpointPod, RestorePod가 생긴 것이고, StatefulSet에도 디플로이먼트처럼 Recreate 전략(alpha)이 생겼다. StatefulSet maxUnavailable은 v1.36에서 버그(kubernetes#137409) 때문에 기본으로 꺼졌다가 다시 켜졌다.
 
 ## 3. Metrics API v1
 
@@ -79,7 +79,7 @@ kubectl get --raw /apis/metrics.k8s.io/ | jq '.versions'
 kubectl get apiservice v1.metrics.k8s.io v1beta1.metrics.k8s.io
 ```
 
-기초 공부 때 '스케줄러는 실제 사용량이 아니라 requests로 자리를 계산하고, 사용량은 kubectl top으로 따로 본다(metrics-server 필요)'고 적었다. 그 kubectl top 뒤에 있던 API가 이제야 정식이 된 셈이다.
+기초 공부 때 '스케줄러는 실제 사용량이 아니라 requests로 자리를 계산하고, 사용량은 kubectl top으로 따로 본다(metrics-server 필요)'고 적었다. 그 kubectl top 뒤에 있던 API가 이제야 정식이 됐다.
 
 ## 4. Pod 인증서와 ClusterTrustBundle GA
 

@@ -19,7 +19,7 @@ series:
 series_order: 20
 ---
 
-2과목 'SQL 활용' 첫 번째, 서브 쿼리. 서브쿼리 종류, 다중행 연산자(IN, ANY, ALL, EXISTS), NOT IN과 NULL 함정이 자주 나온다. 결과는 예제 테이블로 직접 돌려 봤다.
+SQL 활용 파트는 서브쿼리부터다. 서브쿼리 종류, 다중행 연산자(IN, ANY, ALL, EXISTS), NOT IN과 NULL 함정이 자주 나온다. 결과는 예제 테이블로 직접 돌려 봤다.
 
 ## 요약
 

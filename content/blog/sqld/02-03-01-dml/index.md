@@ -18,7 +18,7 @@ series:
 series_order: 28
 ---
 
-2과목 '관리 구문' 첫 번째, DML. MERGE의 동작과 DELETE, TRUNCATE, DROP의 차이가 자주 나온다. 예제는 EMP에서 개발부 사원만 복사한 EMP_COPY 테이블로 실행했다.
+MERGE의 동작과 DELETE, TRUNCATE, DROP의 차이가 자주 나온다. 예제는 EMP에서 개발부 사원만 복사한 EMP_COPY 테이블로 실행했다.
 
 ## 요약
 

@@ -99,7 +99,7 @@ v1.5.0은 2월 27일에 나왔고, 공식 블로그 소개 글은 4월에 올라
 | 백엔드로 보낼 클라이언트 인증서 | spec.tls.backend.clientCertificateRef. 게이트웨이와 백엔드 사이 mTLS |
 | ReferenceGrant v1 | 1년 넘게 안 바뀌어서 v1으로 올렸다 |
 
-v1.3 때 XListenerSet이라는 실험 리소스로 처음 봤던 게 ListenerSet으로 정식이 됐고, v1.4 때 Experimental이던 클라이언트 인증서 검증도 Standard가 됐다. 1년 동안 세 번 정리하면서 같은 기능이 Experimental에서 Standard로 올라오는 걸 따라가 본 셈이다.
+v1.3 때 XListenerSet이라는 실험 리소스로 처음 봤던 게 ListenerSet으로 정식이 됐고, v1.4 때 Experimental이던 클라이언트 인증서 검증도 Standard가 됐다. 1년 동안 세 번 정리하면서 같은 기능이 Experimental에서 Standard로 올라오는 걸 따라가 봤다.
 
 {{< mermaid >}}
 flowchart LR

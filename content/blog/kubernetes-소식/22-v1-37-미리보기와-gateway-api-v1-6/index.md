@@ -121,7 +121,7 @@ flowchart TB
   r1 --> r2
 {{< /mermaid >}}
 
-XBackend의 첫 용도가 에이전트 워크로드가 바깥 AI API로 나가는 이그레스라는 점도 눈에 띄었다. 3월에 정리한 Agent Sandbox와 같은 흐름이다. 다만 Service에서는 혼동된 대리인(confused deputy) 공격 위험 때문에 외부 호스트 이름을 막아 왔고, XBackend에서도 선택 기능이라 위험을 이해하고 켜라고 했다.
+XBackend의 첫 용도는 에이전트 워크로드가 바깥 AI API로 나가는 이그레스다. 3월에 정리한 Agent Sandbox와 같은 흐름이다. 다만 Service에서는 혼동된 대리인(confused deputy) 공격 위험 때문에 외부 호스트 이름을 막아 왔고, XBackend에서도 선택 기능이라 위험을 이해하고 켜라고 했다.
 
 ## 내 클러스터에서 확인할 것
 
