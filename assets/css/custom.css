@@ -3,3 +3,25 @@
 
 /* 카테고리 미리보기 카드에서는 태그 줄을 숨겨 요약이 먼저 보이게 함 (글 페이지에는 그대로 표시) */
 .category-preview .article-link--card .flex-row.flex-wrap:has(> a) { display: none; }
+
+/* Mermaid 그림: 누르면 크게 보기 (layouts/partials/extend-footer.html) */
+pre.mermaid { cursor: zoom-in; }
+pre.mermaid:focus-visible { outline: 2px solid rgb(var(--color-primary-500)); outline-offset: 4px; }
+pre.mermaid.mm-shrunk::after {
+  content: "누르면 크게 보기";
+  display: block;
+  margin-top: 0.25rem;
+  text-align: right;
+  font: 0.75rem/1.2 ui-sans-serif, system-ui, sans-serif;
+  color: rgb(var(--color-neutral-500));
+}
+.mm-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; overflow: auto; padding: 24px;
+  background: rgb(var(--color-neutral)); cursor: zoom-out;
+}
+.dark .mm-overlay { background: rgb(var(--color-neutral-800)); }
+.mm-overlay svg { flex: none; margin: auto; max-width: none; }
+pre.mermaid svg { margin-inline: auto; }
+/* 한글 단어 중간에서 줄이 바뀌지 않게. Mermaid가 본문 밖 임시 요소에서 글자 폭을 재므로 전역으로 건다 */
+.nodeLabel, .edgeLabel, .cluster-label { word-break: keep-all; }

@@ -1,0 +1,56 @@
+<script>
+// Mermaid 그림은 본문 폭에 맞춰 줄어들어 글자가 작아진다. 누르면 화면 전체에 크게 띄운다.
+(() => {
+  if (!document.querySelector("pre.mermaid")) return;
+  const mark = () => document.querySelectorAll("pre.mermaid").forEach((pre) => {
+    const svg = pre.querySelector("svg");
+    if (!svg) return;
+    const w = svg.viewBox.baseVal.width;
+    pre.classList.toggle("mm-shrunk", w > 0 && svg.getBoundingClientRect().width / w < 0.9);
+    pre.tabIndex = 0;
+    pre.setAttribute("role", "button");
+    pre.setAttribute("aria-label", "그림 크게 보기");
+  });
+  new MutationObserver(mark).observe(document.body, { childList: true, subtree: true });
+  addEventListener("resize", mark);
+
+  const open = (pre) => {
+    const svg = pre.querySelector("svg");
+    if (!svg) return;
+    const vb = svg.viewBox.baseVal;
+    const fitW = (innerWidth - 48) / vb.width, fitH = (innerHeight - 48) / vb.height;
+    // 화면에 들어오면 최대 2배까지 키우고, 75%보다 줄여야 하면 원래 크기로 두고 스크롤한다.
+    let s = Math.min(fitW, Math.max(fitH, 1), 2);
+    if (s < 0.75) s = 1;
+    const big = svg.cloneNode(true);
+    big.removeAttribute("style");
+    big.setAttribute("width", vb.width * s);
+    big.setAttribute("height", vb.height * s);
+    const box = document.createElement("div");
+    box.className = "mm-overlay";
+    box.setAttribute("role", "dialog");
+    box.setAttribute("aria-modal", "true");
+    box.setAttribute("aria-label", "그림 크게 보기");
+    box.tabIndex = -1;
+    box.append(big);
+    const close = () => {
+      box.remove();
+      document.documentElement.style.overflow = "";
+      pre.focus({ preventScroll: true });
+    };
+    box.addEventListener("click", close);
+    box.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+    document.body.append(box);
+    document.documentElement.style.overflow = "hidden";
+    box.focus();
+  };
+  document.addEventListener("click", (e) => {
+    const pre = e.target.closest("pre.mermaid");
+    if (pre) open(pre);
+  });
+  document.addEventListener("keydown", (e) => {
+    const pre = e.target.closest?.("pre.mermaid");
+    if (pre && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); open(pre); }
+  });
+})();
+</script>
