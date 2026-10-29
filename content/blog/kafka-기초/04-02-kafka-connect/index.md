@@ -163,26 +163,6 @@ cat orders-copy.txt
 | plugin.path | 커넥터, 컨버터 플러그인 jar를 찾는 경로 |
 | SMT | 단일 메시지 변환. 레코드를 하나씩 바꾸는 간단한 변환 |
 
-## 복습 문제
-
-**1.** 컨버터를 StringConverter로 바꾸면 orders-raw에 들어가는 값은 어떻게 달라지는가?
-
-**2.** 싱크 커넥터가 어디까지 읽었는지 확인하는 방법을 적어라.
-
-**3.** 단독 모드 워커가 죽었다 살아났을 때 파일을 처음부터 다시 읽지 않는 이유는?
-
-## 답과 풀이
-
-1. JSON 봉투 없이 1001,user-1,서울,32000 같은 문자열이 그대로 들어간다(value.converter=org.apache.kafka.connect.storage.StringConverter).
-
-2. 싱크 커넥터의 컨슈머 그룹을 본다.
-
-```bash
-bin/kafka-consumer-groups.sh --bootstrap-server localhost:19092 --describe --group connect-orders-file-sink
-```
-
-3. 소스 오프셋(파일 이름별 위치)을 offset.storage.file.filename에 저장해 두고, 다시 시작할 때 거기서부터 읽기 때문이다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, Kafka Connect 사용자 가이드: <https://kafka.apache.org/41/kafka-connect/user-guide/>

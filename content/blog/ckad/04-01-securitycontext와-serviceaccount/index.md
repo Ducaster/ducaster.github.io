@@ -18,7 +18,7 @@ series:
 series_order: 6
 ---
 
-환경·구성·보안(25%)은 비중이 제일 큰데 절반 이상이 CKA에서 본 것(RBAC, 쿼터, LimitRange, Pod Security 라벨)이라, 오늘은 시험 준비 계획에 '새로 볼 것'으로 적어 둔 SecurityContext와 capabilities, 그리고 앱 쪽에서 보는 ServiceAccount만 정리했다. 마지막에는 restricted 네임스페이스에서 거절당하지 않는 파드를 직접 만들어 봤다.
+환경·구성·보안(25%)은 비중이 제일 큰데 절반 이상이 CKA에서 본 것(RBAC, 쿼터, LimitRange, Pod Security 라벨)이라, 오늘은 시험 안내 글에 '새로 볼 것'으로 적어 둔 SecurityContext와 capabilities, 그리고 앱 쪽에서 보는 ServiceAccount만 정리했다. 마지막에는 restricted 네임스페이스에서 거절당하지 않는 파드를 직접 만들어 봤다.
 
 ## 요약
 

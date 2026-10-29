@@ -179,43 +179,6 @@ kubectl api-resources --namespaced=false                   # 네임스페이스�
 | 어노테이션 | 고르는 데는 쓰지 않는 부가 정보 |
 | 네임스페이스 | 오브젝트 이름이 겹치지 않게 나누는 공간 |
 
-## 복습 문제
-
-**1.** 디플로이먼트 api(nginx:1.27, 복제본 3개)의 YAML 뼈대를 파일로 뽑고, 그 안에서 원하는 상태가 적힌 부분과 비어 있는 status를 찾아라.
-
-**2.** 파드 세 개를 각각 app=shop,env=prod / app=shop,env=dev / app=blog,env=prod 라벨로 만들고, env가 prod인 파드와 app이 shop이 아닌 파드를 각각 골라라.
-
-**3.** 네임스페이스 lab을 만들어 현재 컨텍스트의 기본 네임스페이스로 바꾸고, 네임스페이스에 속하지 않는 리소스 종류를 다섯 개만 적어라.
-
-## 답과 풀이
-
-1. dry-run으로 뽑은 파일에는 spec이 채워져 있고 status는 빈 객체다.
-
-```bash
-kubectl create deployment api --image=nginx:1.27 --replicas=3 --dry-run=client -o yaml > api.yaml
-grep -n -A3 '^spec:' api.yaml
-grep -n '^status' api.yaml              # status: {}
-```
-
-2. 쉼표 없이 조건 하나씩 쓰면 된다. !=는 그 라벨이 아예 없는 파드도 고른다.
-
-```bash
-kubectl run p1 --image=nginx:1.27 --labels=app=shop,env=prod
-kubectl run p2 --image=nginx:1.27 --labels=app=shop,env=dev
-kubectl run p3 --image=nginx:1.27 --labels=app=blog,env=prod
-kubectl get pods -l env=prod            # p1, p3
-kubectl get pods -l 'app!=shop'         # p3
-```
-
-3. 예: nodes, namespaces, persistentvolumes, storageclasses, clusterroles.
-
-```bash
-kubectl create namespace lab
-kubectl config set-context --current --namespace=lab
-kubectl config view --minify | grep namespace
-kubectl api-resources --namespaced=false
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 쿠버네티스 오브젝트: <https://kubernetes.io/docs/concepts/overview/working-with-objects/>

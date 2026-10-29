@@ -161,46 +161,6 @@ echo 'compdef __start_kubectl k' >> ~/.zshrc
 | 컨텍스트 | kubeconfig에서 '어느 클러스터에 누구로 접속할지'를 묶은 이름 |
 | kind | Kubernetes IN Docker. Docker 컨테이너를 노드로 쓰는 로컬 클러스터 도구 |
 
-## 복습 문제
-
-**1.** kind로 워커 노드 1개짜리 클러스터 lab을 따로 만들고, kubectl이 지금 어느 클러스터를 보고 있는지 확인한 뒤 study로 다시 돌아와라.
-
-**2.** kind 노드가 정말 컨테이너인지 docker 명령으로 확인하고, 워커 노드 안에서 돌고 있는 컨테이너 목록을 봐라.
-
-**3.** nginx:1.27 파드 web을 띄우고, 어느 노드에 배치됐는지 확인한 뒤 지워라.
-
-## 답과 풀이
-
-1. 컨텍스트 이름은 kind-클러스터이름이다.
-
-```bash
-cat > kind-lab.yaml <<'YAML'
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-- role: control-plane
-- role: worker
-YAML
-kind create cluster --name lab --config kind-lab.yaml
-kubectl config current-context          # kind-lab (만들면서 바뀐다)
-kubectl config use-context kind-study
-```
-
-2. 노드 컨테이너 안에는 crictl이 들어 있어서 containerd가 돌리는 컨테이너를 볼 수 있다.
-
-```bash
-docker ps --format '{{.Names}}  {{.Image}}'
-docker exec study-worker crictl ps      # kube-proxy, CNI(kindnet) 컨테이너 등이 보인다
-```
-
-3. -o wide를 붙이면 NODE 열이 나온다.
-
-```bash
-kubectl run web --image=nginx:1.27
-kubectl get pod web -o wide
-kubectl delete pod web
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 개요: <https://kubernetes.io/docs/concepts/overview/>

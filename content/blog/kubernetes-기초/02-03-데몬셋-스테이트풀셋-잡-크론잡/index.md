@@ -189,39 +189,6 @@ kubectl create job tick-now --from=cronjob/tick   # 일정을 기다리지 않�
 | 잡 | 파드가 성공으로 끝날 때까지 실행하는 컨트롤러 |
 | 크론잡 | cron 형식 일정마다 잡을 만드는 컨트롤러 |
 
-## 복습 문제
-
-**1.** 2절의 데몬셋이 컨트롤 플레인 노드에도 뜨게 고쳐라.
-
-**2.** 스테이트풀셋 web의 복제본을 3개로 늘리고, 새 파드 이름과 새 PVC 이름을 맞혀 본 뒤 확인해라.
-
-**3.** 5분마다 date를 출력하는 크론잡 report를 한국 시간 기준으로 만들어라.
-
-## 답과 풀이
-
-1. 컨트롤 플레인 테인트를 견디는 톨러레이션을 파드 템플릿에 넣는다.
-
-```bash
-kubectl patch daemonset node-agent --type=merge -p '{"spec":{"template":{"spec":{"tolerations":[{"key":"node-role.kubernetes.io/control-plane","operator":"Exists","effect":"NoSchedule"}]}}}}'
-kubectl get pods -l app=node-agent -o wide    # 3개
-```
-
-2. 순번이 이어져서 web-2와 www-web-2가 생긴다.
-
-```bash
-kubectl scale statefulset web --replicas=3
-kubectl get pods -l app=web-ss
-kubectl get pvc
-```
-
-3. --schedule로 일정을 주고, 시간대는 YAML의 spec.timeZone에 넣는다.
-
-```bash
-kubectl create cronjob report --image=busybox:1.36 --schedule="*/5 * * * *" --dry-run=client -o yaml -- date > report.yaml
-# spec 아래에 timeZone: Asia/Seoul 추가
-kubectl apply -f report.yaml
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 워크로드 관리: <https://kubernetes.io/docs/concepts/workloads/controllers/>

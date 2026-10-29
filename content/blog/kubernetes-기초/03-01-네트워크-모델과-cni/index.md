@@ -132,39 +132,6 @@ docker exec study-worker ls /opt/cni/bin         # 플러그인 실행 파일들
 | 오버레이 | 노드 네트워크 위에 패킷을 한 번 더 감싸서 보내는 방식(VXLAN 등) |
 | IPAM | IP Address Management. 대역에서 IP를 나눠 주고 회수하는 일 |
 
-## 복습 문제
-
-**1.** 노드마다 배정된 파드 대역을 확인하고, 새로 만든 파드의 IP가 어느 노드 대역에서 나왔는지 맞혀라.
-
-**2.** 서로 다른 노드에 있는 파드 둘 사이에 ping이 되는지 확인하고, 그 경로가 노드의 라우팅 표 어디에 있는지 찾아라.
-
-**3.** 파드를 지우고 같은 이름으로 다시 만들면 IP가 같은지 확인해라.
-
-## 답과 풀이
-
-1. -o wide의 IP 앞 세 자리가 그 파드가 있는 노드의 podCIDR와 같다.
-
-```bash
-kubectl get nodes -o custom-columns=NAME:.metadata.name,PODCIDR:.spec.podCIDR
-kubectl run c --image=nginx:1.27
-kubectl get pod c -o wide
-```
-
-2. 상대 노드의 파드 대역이 상대 노드 IP로 가는 줄을 찾는다.
-
-```bash
-kubectl exec a -- ping -c 2 $(kubectl get pod b -o jsonpath='{.status.podIP}')
-docker exec study-worker ip route | grep 10.244.2.0
-```
-
-3. 대부분 다른 IP를 받는다. 그래서 파드 IP를 설정 파일에 적어 두면 안 된다.
-
-```bash
-kubectl get pod c -o jsonpath='{.status.podIP}{"\n"}'
-kubectl delete pod c && kubectl run c --image=nginx:1.27
-kubectl get pod c -o jsonpath='{.status.podIP}{"\n"}'
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 서비스·로드 밸런싱·네트워킹(네트워크 모델): <https://kubernetes.io/docs/concepts/services-networking/>

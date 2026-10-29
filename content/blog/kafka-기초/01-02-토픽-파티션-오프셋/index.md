@@ -147,32 +147,6 @@ auto.create.topics.enable 기본값이 true라서, 없는 토픽에 쓰면 브�
 | murmur2 | 키 있는 레코드의 파티션을 정할 때 쓰는 해시 함수 |
 | 핫 키 | 이벤트가 몰려 특정 파티션만 바쁘게 만드는 키 |
 
-## 복습 문제
-
-**1.** 파티션 6개짜리 토픽 clicks를 만들고, 파티션 개수를 확인해라.
-
-**2.** 키 user-1, user-4로 각각 한 건씩 보내고, 두 이벤트가 몇 번 파티션에 들어갔는지 확인해라. 파티션 6개 기준으로 예상 결과는?
-
-**3.** 키 순서가 중요한 토픽의 파티션을 나중에 늘리면 어떤 문제가 생기는가?
-
-## 답과 풀이
-
-1. 
-
-```bash
-bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic clicks --partitions 6 --replication-factor 1
-bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic clicks | head -1
-```
-
-2. 위 표대로라면 user-1은 2번, user-4는 1번이다.
-
-```bash
-printf 'user-1:a\nuser-4:b\n' | bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic clicks --property parse.key=true --property key.separator=:
-bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic clicks --from-beginning --timeout-ms 5000 --property print.key=true --property print.partition=true
-```
-
-3. 파티션 수가 바뀌면 같은 키가 다른 파티션으로 가기 시작한다. 예전 이벤트와 새 이벤트가 다른 파티션에 나뉘어, 그 키의 순서를 보장할 수 없게 된다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, 토픽과 파티션 개념: <https://kafka.apache.org/41/getting-started/introduction/>

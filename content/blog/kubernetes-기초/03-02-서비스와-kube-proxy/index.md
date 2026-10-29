@@ -127,40 +127,6 @@ kind에서 LoadBalancer를 쓰려면 cloud-provider-kind 같은 도구를 따로
 | DNAT | 패킷의 목적지 주소를 바꾸는 것 |
 | NodePort | 모든 노드의 같은 포트로 서비스를 여는 방식 |
 
-## 복습 문제
-
-**1.** 디플로이먼트 echo(agnhost:2.40의 serve-hostname, 복제본 2개)를 만들고 포트 8080으로 받아 9376으로 보내는 서비스 echo를 만들어라. 서비스 뒤에 파드 IP 두 개가 있는지 확인해라.
-
-**2.** echo 서비스의 셀렉터를 일부러 틀리게 바꾸면 무엇이 보이는지 확인하고 되돌려라.
-
-**3.** echo를 NodePort로도 열고, 노드 컨테이너 안에서 접속해라.
-
-## 답과 풀이
-
-1. expose의 --port가 서비스 포트, --target-port가 파드 포트다.
-
-```bash
-kubectl create deployment echo --image=registry.k8s.io/e2e-test-images/agnhost:2.40 --replicas=2 -- /agnhost serve-hostname
-kubectl expose deployment echo --port=8080 --target-port=9376
-kubectl get endpointslices -l kubernetes.io/service-name=echo
-```
-
-2. 셀렉터가 아무 파드도 고르지 못하면 EndpointSlice의 엔드포인트가 비고, 요청은 연결 거부나 시간 초과가 된다.
-
-```bash
-kubectl patch service echo -p '{"spec":{"selector":{"app":"nope"}}}'
-kubectl get endpointslices -l kubernetes.io/service-name=echo     # ENDPOINTS <unset>
-kubectl patch service echo -p '{"spec":{"selector":{"app":"echo"}}}'
-```
-
-3. 노드 포트 번호를 jsonpath로 꺼낸다.
-
-```bash
-kubectl expose deployment echo --name=echo-np --type=NodePort --port=8080 --target-port=9376
-NP=$(kubectl get svc echo-np -o jsonpath='{.spec.ports[0].nodePort}')
-docker exec study-worker2 curl -s localhost:$NP
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 서비스: <https://kubernetes.io/docs/concepts/services-networking/service/>

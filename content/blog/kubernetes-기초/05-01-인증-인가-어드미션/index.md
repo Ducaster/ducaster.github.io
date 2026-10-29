@@ -134,41 +134,6 @@ kubectl label namespace dev pod-security.kubernetes.io/enforce-          # 라�
 | ServiceAccount | 파드 안의 앱이 API 서버에 접근할 때 쓰는 계정 |
 | Pod Security Admission | 네임스페이스 라벨에 따라 파드 보안 수준을 검사하는 내장 어드미션 |
 
-## 복습 문제
-
-**1.** 네임스페이스 qa에 ServiceAccount tester를 만들고, qa의 디플로이먼트를 만들고 볼 수 있게(create, get, list) 해라.
-
-**2.** tester가 qa에서 시크릿을 읽을 수 있는지, 다른 네임스페이스에서 디플로이먼트를 만들 수 있는지 확인해라.
-
-**3.** qa 네임스페이스에 baseline 수준을 경고만 하도록(warn) 걸고, privileged: true인 파드를 만들어 경고를 확인해라.
-
-## 답과 풀이
-
-1. 디플로이먼트는 apps 그룹이라 --resource=deployments로 쓰면 된다.
-
-```bash
-kubectl create namespace qa
-kubectl -n qa create serviceaccount tester
-kubectl -n qa create role deployer --verb=create,get,list --resource=deployments
-kubectl -n qa create rolebinding tester-deployer --role=deployer --serviceaccount=qa:tester
-kubectl auth can-i create deployments -n qa --as=system:serviceaccount:qa:tester    # yes
-```
-
-2. 둘 다 no다. Role에 시크릿이 없고, RoleBinding은 qa에만 걸렸다.
-
-```bash
-kubectl auth can-i get secrets -n qa --as=system:serviceaccount:qa:tester
-kubectl auth can-i create deployments -n default --as=system:serviceaccount:qa:tester
-```
-
-3. warn은 만들어 주되 경고를 띄운다.
-
-```bash
-kubectl label namespace qa pod-security.kubernetes.io/warn=baseline
-kubectl -n qa run priv --image=busybox:1.36 --overrides='{"spec":{"containers":[{"name":"priv","image":"busybox:1.36","command":["sleep","3600"],"securityContext":{"privileged":true}}]}}'
-# Warning: would violate PodSecurity "baseline:latest": privileged (container "priv" must not set securityContext.privileged=true)
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, API 접근 제어: <https://kubernetes.io/docs/concepts/security/controlling-access/>

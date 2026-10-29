@@ -138,37 +138,6 @@ helm template은 클러스터에 아무것도 만들지 않고 결과 YAML만 �
 | 리비전 | 릴리스의 설치·업그레이드·롤백마다 올라가는 번호 |
 | helm template | 클러스터 없이 렌더링 결과만 보여 주는 명령 |
 
-## 복습 문제
-
-**1.** podinfo 차트를 네임스페이스 lab에 릴리스 이름 web으로, 복제본 1개로 설치해라.
-
-**2.** web의 ui.message를 바꿔 업그레이드하고, 실제로 덮어쓴 값과 리비전 목록을 확인해라.
-
-**3.** 설치하지 않고 podinfo 차트가 만드는 디플로이먼트 YAML만 파일로 뽑아라.
-
-## 답과 풀이
-
-1. --create-namespace를 붙이면 네임스페이스도 만든다.
-
-```bash
-helm install web podinfo/podinfo -n lab --create-namespace --set replicaCount=1
-helm list -n lab
-```
-
-2. get values는 덮어쓴 값만, history는 리비전 목록을 보여 준다.
-
-```bash
-helm upgrade web podinfo/podinfo -n lab --set replicaCount=1 --set ui.message="from lab"
-helm get values web -n lab
-helm history web -n lab
-```
-
-3. helm template에 --show-only로 템플릿 파일 하나만 고른다.
-
-```bash
-helm template web podinfo/podinfo --show-only templates/deployment.yaml > podinfo-deploy.yaml
-```
-
 ## 참고 자료
 
 - Helm 문서, 빠른 시작: <https://helm.sh/docs/intro/quickstart/>

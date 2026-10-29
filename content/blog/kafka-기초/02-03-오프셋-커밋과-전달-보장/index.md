@@ -139,27 +139,6 @@ billing         orders          2          0               6               6
 | transactional.id | 재시작을 넘어 트랜잭션 프로듀서를 식별하는 ID |
 | read_committed | 커밋된 트랜잭션 레코드만 읽는 컨슈머 격리 수준 |
 
-## 복습 문제
-
-**1.** 그룹 billing의 orders 오프셋을 2025-12-20 09:00 기준으로 되돌리는 명령을 dry-run으로 적어라.
-
-**2.** 처리 후 커밋하는 컨슈머가 커밋 직전에 죽었다. 어떤 일이 생기고, 애플리케이션은 무엇을 대비해야 하는가?
-
-**3.** reset-offsets가 '그룹에 활성 멤버가 있다'며 실패했다. 어떻게 해야 하는가?
-
-## 답과 풀이
-
-1. 
-
-```bash
-bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group billing --topic orders \
-  --reset-offsets --to-datetime 2025-12-20T09:00:00.000 --dry-run
-```
-
-2. 커밋되지 않은 구간을 다시 읽어 같은 레코드를 두 번 처리한다(at-least-once). 주문 ID로 중복을 거르는 식으로 처리를 멱등하게 만들어야 한다.
-
-3. 그 그룹의 컨슈머를 모두 멈춘 뒤 다시 실행한다. describe에 has no active members가 나오면 된다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, 설계(메시지 전달 보장): <https://kafka.apache.org/41/design/design/>

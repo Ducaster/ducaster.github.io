@@ -167,26 +167,6 @@ bin/kafka-leader-election.sh --bootstrap-server $B --election-type preferred --a
 | ELR | ISR에서 빠졌지만 데이터 유실 없이 리더가 될 수 있는 복제본 목록(KIP-966) |
 | 선호 리더 | Replicas 목록의 첫 번째 브로커 |
 
-## 복습 문제
-
-**1.** 복제 계수 3, min.insync.replicas 2인 토픽에서 브로커 2대가 동시에 죽으면 acks=all 쓰기는 어떻게 되는가?
-
-**2.** 복제본이 모자란 파티션만 골라 보는 명령을 적어라.
-
-**3.** acks=1로 쓴 레코드가 리더 로그에는 있는데 컨슈머가 못 읽는 상황이 생기는 이유를 설명해라.
-
-## 답과 풀이
-
-1. ISR이 1개가 되어 min.insync.replicas(2)보다 적으므로 NotEnoughReplicasException으로 거절된다. 읽기는 남은 리더에서 HW까지 가능하다.
-
-2. 
-
-```bash
-bin/kafka-topics.sh --bootstrap-server localhost:19092 --describe --under-replicated-partitions
-```
-
-3. 컨슈머는 HW까지만 읽는다. ELR이 켜진 4.x에서는 ISR이 min.insync.replicas보다 작으면 HW가 올라가지 않아, acks=1로 리더에 써진 레코드도 복제본이 회복될 때까지 보이지 않는다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, 복제: <https://kafka.apache.org/41/design/design/>

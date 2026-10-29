@@ -148,29 +148,6 @@ bin/kafka-console-producer.sh --bootstrap-server $B --topic payments --compressi
 | 멱등 프로듀서 | 프로듀서 ID와 시퀀스 번호로 재시도 중복을 막는 프로듀서 |
 | 스티키 파티셔닝 | 키 없는 레코드를 배치 단위로 한 파티션에 몰아 보내는 방식 |
 
-## 복습 문제
-
-**1.** acks=all, min.insync.replicas=2, 복제 계수 3일 때 브로커 한 대가 죽으면 쓰기는 어떻게 되는가?
-
-**2.** perf 테스트로 압축 없이와 zstd 압축일 때 처리량을 비교하는 명령을 적어라.
-
-**3.** linger.ms를 0에서 5로 바꾸면 무엇이 좋아지고 무엇이 나빠지는가?
-
-## 답과 풀이
-
-1. ISR이 2개 남아 min.insync.replicas를 만족하므로 쓰기는 계속 된다. 한 대 더 죽으면 거절된다.
-
-2. 
-
-```bash
-bin/kafka-producer-perf-test.sh --topic perf --num-records 300000 --record-size 1024 --throughput -1 --producer-props bootstrap.servers=$B compression.type=none
-bin/kafka-producer-perf-test.sh --topic perf --num-records 300000 --record-size 1024 --throughput -1 --producer-props bootstrap.servers=$B compression.type=zstd
-```
-
-perf 테스트의 레코드는 무작위 바이트라 압축이 잘 안 된다. 실제 JSON 로그 같은 데이터에서 차이가 더 크다.
-
-3. 배치가 커져 요청 수가 줄고 처리량, 압축 효율이 좋아진다. 대신 레코드 하나가 최대 5ms 더 기다릴 수 있다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, 프로듀서 설정: <https://kafka.apache.org/41/configuration/producer-configs/>

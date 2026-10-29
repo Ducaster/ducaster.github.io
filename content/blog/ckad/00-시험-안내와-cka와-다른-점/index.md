@@ -1,5 +1,5 @@
 ---
-title: '[CKAD] 시험 안내와 CKA와 다른 점: 일주일 준비 계획'
+title: '[CKAD] 시험 안내와 CKA와 다른 점: 겹치는 범위와 새로 볼 것'
 date: '2025-03-12T21:10:00+09:00'
 categories:
 - CKAD
@@ -8,14 +8,13 @@ tags:
 - ckad
 - cka
 - 시험후기
-- 공부계획
 - 시험 준비
 series:
 - CKAD
 series_order: 1
 ---
 
-어제 CKA를 붙었다. 손이 굳기 전에 바로 다음 주 CKAD를 예약했다. 두 시험은 형식과 환경이 같고 겹치는 범위가 많아서, CKAD는 일주일 동안 '개발자 쪽에서 새로 나오는 것'만 채우기로 했다. 이 시리즈는 CKA 정리를 바탕으로 차이만 적는다.
+어제 CKA를 붙었다. 손이 굳기 전에 바로 다음 주 CKAD를 예약했다. 두 시험은 형식과 환경이 같고 겹치는 범위가 많아서, CKAD는 '개발자 쪽에서 새로 나오는 것'만 채우기로 했다. 이 시리즈는 CKA 정리를 바탕으로 차이만 적는다.
 
 ## 요약
 
@@ -47,12 +46,7 @@ _오른쪽이 CKAD다. 환경·구성·보안이 25%로 가장 크고, 나머지
 | 환경·구성·보안 (25%) | CRD·오퍼레이터, 인증·인가·어드미션, requests·limits·쿼터, ConfigMap, Secret, ServiceAccount, SecurityContext | 대부분 | SecurityContext와 capabilities, 앱 입장의 ServiceAccount |
 | 서비스와 네트워킹 (20%) | NetworkPolicy 기초, 서비스로 접근 제공·문제 해결, Ingress 규칙 | 전부 | 앱 계층별 NetworkPolicy 연습 |
 
-## 3. 일주일 계획
-
-![CKAD 일주일 준비 계획](./attachments/k8s-ckad-plan.png)
-_CKA 합격 다음 날(3월 12일)에 계획을 세웠다. 새로 나오는 범위를 앞에 몰고, killer.sh는 중간과 시험 전날에 한 번씩 둔다_
-
-## 4. CKAD에서 특히 챙길 습관
+## 3. CKAD에서 특히 챙길 습관
 
 ```bash
 k config set-context --current --namespace=shop   # 문제 네임스페이스로 기본값을 바꿔 둔다

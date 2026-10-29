@@ -156,42 +156,6 @@ kubectl get secret db-cred -o jsonpath='{.data.password}' | base64 -d     # s3cr
 | immutable | 만든 뒤 값을 못 바꾸게 잠그는 필드 |
 | 저장 시 암호화 | API 서버가 etcd에 쓰기 전에 Secret을 암호화하는 설정 |
 
-## 복습 문제
-
-**1.** 키 COLOR=blue를 가진 ConfigMap ui를 만들고, 이 값을 환경 변수 THEME으로 받는 파드 ui-pod를 만들어라.
-
-**2.** ui의 COLOR를 red로 바꾼 뒤, ui-pod의 THEME이 언제 바뀌는지 확인해라.
-
-**3.** Secret api-token(키 token=abc123)을 만들고, 실제 저장된 값을 꺼내 디코딩해라.
-
-## 답과 풀이
-
-1. dry-run으로 파드 뼈대를 뽑고 env에 configMapKeyRef를 넣는다.
-
-```bash
-kubectl create configmap ui --from-literal=COLOR=blue
-kubectl run ui-pod --image=busybox:1.36 --dry-run=client -o yaml -- sleep 3600 > ui-pod.yaml
-# containers[0].env: [{name: THEME, valueFrom: {configMapKeyRef: {name: ui, key: COLOR}}}]
-kubectl apply -f ui-pod.yaml
-kubectl exec ui-pod -- printenv THEME       # blue
-```
-
-2. 환경 변수는 바뀌지 않는다. 파드를 지우고 다시 만들면 red가 된다.
-
-```bash
-kubectl patch configmap ui -p '{"data":{"COLOR":"red"}}'
-kubectl exec ui-pod -- printenv THEME       # 여전히 blue
-kubectl delete pod ui-pod && kubectl apply -f ui-pod.yaml
-kubectl exec ui-pod -- printenv THEME       # red
-```
-
-3. jsonpath로 꺼내 base64 -d로 푼다.
-
-```bash
-kubectl create secret generic api-token --from-literal=token=abc123
-kubectl get secret api-token -o jsonpath='{.data.token}' | base64 -d
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, ConfigMap: <https://kubernetes.io/docs/concepts/configuration/configmap/>

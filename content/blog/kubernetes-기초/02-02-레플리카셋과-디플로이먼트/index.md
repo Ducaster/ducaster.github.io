@@ -127,39 +127,6 @@ kubectl scale deployment/web --replicas=5              # 개수만 바꿀 때. �
 | 리비전 | 디플로이먼트의 파드 템플릿 버전 번호 |
 | ownerReferences | 이 오브젝트를 만든 주인(예: 파드의 주인은 레플리카셋)을 가리키는 필드 |
 
-## 복습 문제
-
-**1.** 디플로이먼트 shop(nginx:1.26, 복제본 2개)을 만들고, 파드 하나를 지웠을 때 다시 생기는지 확인해라.
-
-**2.** shop의 이미지를 nginx:1.27로 바꾼 뒤 레플리카셋이 몇 개인지, 각각 몇 개의 파드를 갖는지 확인해라.
-
-**3.** shop을 이전 버전으로 되돌리고, rollout history에서 리비전 번호가 어떻게 바뀌었는지 확인해라.
-
-## 답과 풀이
-
-1. 지운 직후 다시 조회하면 새 이름의 파드가 있다.
-
-```bash
-kubectl create deployment shop --image=nginx:1.26 --replicas=2
-kubectl delete $(kubectl get pod -l app=shop -o name | head -1)
-kubectl get pods -l app=shop -w
-```
-
-2. 옛 레플리카셋은 0개, 새 레플리카셋이 2개를 갖는다.
-
-```bash
-kubectl set image deployment/shop nginx=nginx:1.27
-kubectl rollout status deployment/shop
-kubectl get rs -l app=shop
-```
-
-3. 1번 리비전으로 돌아가면 그 리비전이 3번이 되고, 목록에는 2와 3이 남는다.
-
-```bash
-kubectl rollout undo deployment/shop
-kubectl rollout history deployment/shop
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 레플리카셋: <https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/>

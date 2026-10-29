@@ -154,39 +154,6 @@ kubectl delete pod oops clock hello
 | restartPolicy | 컨테이너가 끝났을 때 다시 시작할지 정하는 정책(Always, OnFailure, Never) |
 | emptyDir | 파드가 살아 있는 동안만 있는 빈 디렉터리 볼륨 |
 
-## 복습 문제
-
-**1.** busybox:1.36으로 sleep 3600을 실행하는 파드 sleeper를 만들고, 컨테이너 안에서 hostname과 IP를 확인해라.
-
-**2.** 존재하지 않는 이미지 nginx:9.99로 파드 bad를 만들고, STATUS와 이벤트를 보고 원인을 찾아라.
-
-**3.** 2번 파드의 phase가 무엇인지 jsonpath로 확인해라.
-
-## 답과 풀이
-
-1. -- 뒤가 컨테이너 명령이 된다. 파드 IP는 get -o wide와 같다.
-
-```bash
-kubectl run sleeper --image=busybox:1.36 -- sleep 3600
-kubectl exec sleeper -- sh -c 'hostname; hostname -i'
-kubectl get pod sleeper -o wide
-```
-
-2. STATUS가 ErrImagePull, ImagePullBackOff를 오간다. describe의 Events에 manifest unknown, not found 같은 메시지가 나온다.
-
-```bash
-kubectl run bad --image=nginx:9.99
-kubectl get pod bad
-kubectl describe pod bad | tail -5
-```
-
-3. 이미지를 못 받아 컨테이너가 시작되지 않았으니 Pending이다.
-
-```bash
-kubectl get pod bad -o jsonpath='{.status.phase}'      # Pending
-kubectl delete pod sleeper bad
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 파드: <https://kubernetes.io/docs/concepts/workloads/pods/>

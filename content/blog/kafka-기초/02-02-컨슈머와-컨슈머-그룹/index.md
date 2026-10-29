@@ -173,26 +173,6 @@ TYPE이 Consumer면 새 프로토콜, Classic이면 예전 프로토콜 그룹�
 | KIP-848 | 브로커가 배정을 계산하는 새 컨슈머 리밸런스 프로토콜 |
 | 공유 그룹 | 레코드 단위로 나눠 처리하는 큐 방식 그룹(4.1 미리보기) |
 
-## 복습 문제
-
-**1.** 파티션 3개짜리 토픽을 같은 그룹의 컨슈머 4개가 읽으면 어떻게 되는가?
-
-**2.** 그룹 shipping의 멤버별 파티션 개수를 보는 명령을 적어라.
-
-**3.** 새 그룹으로 콘솔 컨슈머를 붙였는데 기존 데이터가 하나도 안 나온다. 이유와 해결 방법은?
-
-## 답과 풀이
-
-1. 컨슈머 3개가 파티션을 하나씩 맡고, 하나는 놀고 있다. 한 컨슈머가 빠지면 놀던 컨슈머가 이어받는다.
-
-2. 
-
-```bash
-bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group shipping --members
-```
-
-3. 새 그룹은 커밋된 오프셋이 없어서 auto.offset.reset을 따른다. 기본값 latest라 지금 이후 데이터만 읽는다. --from-beginning을 주거나 auto.offset.reset=earliest를 쓴다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, 컨슈머 리밸런스 프로토콜: <https://kafka.apache.org/41/operations/consumer-rebalance-protocol/>

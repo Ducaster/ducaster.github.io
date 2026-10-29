@@ -140,22 +140,6 @@ connect-orders-file-sink Classic                  consumer
 | repartition 토픽 | 키를 바꾼 뒤 데이터를 다시 나누는 내부 토픽 |
 | application.id | Streams 앱 식별자. 그룹 이름과 내부 토픽 이름 앞에 붙는다 |
 
-## 복습 문제
-
-**1.** 같은 application.id로 예제를 두 개 띄우면 파티션 1개짜리 입력 토픽은 어떻게 처리되는가?
-
-**2.** 한글 단어도 세게 하려면 split에 어떤 정규식을 쓰면 되는가?
-
-**3.** changelog 토픽이 없다면 앱 인스턴스가 다른 서버에서 다시 뜰 때 무슨 문제가 생기는가?
-
-## 답과 풀이
-
-1. 파티션이 하나라 한 인스턴스만 처리하고 다른 하나는 대기한다. 처리 중인 쪽이 죽으면 대기하던 쪽이 이어받는다.
-
-2. "(?U)\\W+"처럼 유니코드 플래그를 주거나, 공백 기준 "\\s+"로 자른다.
-
-3. 로컬 상태 저장소가 새 서버에는 없어서 개수를 처음부터 다시 세야 한다. changelog가 있으면 그걸 읽어 상태를 복원한 뒤 이어서 처리한다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, Kafka Streams 빠른 시작: <https://kafka.apache.org/41/streams/quickstart/>

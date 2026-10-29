@@ -158,27 +158,6 @@ INFO Created log for partition __consumer_offsets-35 ... with properties {cleanu
 | 톰스톤 | 값이 null인 삭제 표시 레코드 |
 | cleanup.policy | delete(기간, 크기로 삭제), compact(키별 최신만), 또는 둘 다 |
 
-## 복습 문제
-
-**1.** orders 토픽의 보존 기간을 3일로 바꾸고 확인하는 명령을 적어라.
-
-**2.** 컴팩션 토픽에서 u2를 완전히 지우려면 무엇을 보내야 하는가?
-
-**3.** retention.ms를 1분으로 줬는데 데이터가 계속 남아 있다. 가능한 이유는?
-
-## 답과 풀이
-
-1. 3일은 259200000ms다.
-
-```bash
-bin/kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name orders --add-config retention.ms=259200000
-bin/kafka-configs.sh --bootstrap-server localhost:9092 --describe --entity-type topics --entity-name orders
-```
-
-2. 키 u2에 값이 null인 톰스톤을 보낸다. 콘솔 프로듀서는 null 값을 바로 못 보내서 보통 클라이언트 코드나 다른 도구를 쓴다.
-
-3. 데이터가 아직 활성 세그먼트 안에 있으면 지워지지 않는다. segment.ms나 segment.bytes에 걸려 세그먼트가 닫혀야 삭제 대상이 된다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, 로그 구현: <https://kafka.apache.org/41/implementation/log/>

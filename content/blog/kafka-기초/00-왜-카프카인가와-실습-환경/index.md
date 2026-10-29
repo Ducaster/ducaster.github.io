@@ -136,27 +136,6 @@ bin/kafka-topics.sh --bootstrap-server localhost:9092 --list    # 아무것도 �
 | 컨트롤러 | 토픽, 파티션 배치 같은 클러스터 메타데이터를 관리하는 역할 |
 | KRaft | ZooKeeper 없이 카프카 컨트롤러가 Raft 합의로 메타데이터를 관리하는 방식 |
 
-## 복습 문제
-
-**1.** 단일 노드 KRaft 설정에서 9092와 9093 포트는 각각 무엇에 쓰이는가?
-
-**2.** 다운로드한 tgz 파일이 진짜인지 확인하는 명령을 적어라.
-
-**3.** kafka-server-start.sh를 format 없이 처음 실행하면 왜 실패하는가?
-
-## 답과 풀이
-
-1. 9092는 PLAINTEXT 리스너로 프로듀서, 컨슈머, 관리 도구가 붙는 포트다. 9093은 CONTROLLER 리스너로 컨트롤러 쿼럼 통신에 쓴다. listeners와 controller.listener.names 설정에서 확인할 수 있다.
-
-2. 배포 사이트의 .sha512 값과 직접 계산한 값을 비교한다.
-
-```bash
-shasum -a 512 kafka_2.13-4.1.0.tgz
-cat kafka_2.13-4.1.0.tgz.sha512
-```
-
-3. KRaft 노드는 log.dirs에 클러스터 ID와 메타데이터 버전이 적힌 meta.properties가 있어야 시작한다. 그걸 만드는 게 kafka-storage.sh format이다.
-
 ## 참고 자료
 
 - Apache Kafka 빠른 시작: <https://kafka.apache.org/41/getting-started/quickstart/>

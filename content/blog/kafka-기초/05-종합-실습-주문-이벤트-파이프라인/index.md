@@ -150,22 +150,6 @@ bin/kafka-topics.sh --bootstrap-server $B --describe --under-replicated-partitio
 | 선호 리더 선출 | 리더를 Replicas 목록 첫 번째 브로커로 되돌리는 작업 |
 | under-replicated | ISR이 복제 계수보다 적은 상태 |
 
-## 복습 문제
-
-**1.** 복제 계수 3, min.insync.replicas 2인 토픽에서 브로커 하나가 내려갔을 때, 쓰기와 읽기는 각각 어떻게 되는가?
-
-**2.** 결합 모드 3노드 클러스터에서 노드 둘이 동시에 내려가면 어떤 작업부터 막히는가?
-
-**3.** 장애 실습 전에 기록해 둘 상태 세 가지를 적어라.
-
-## 답과 풀이
-
-1. 쓰기(acks=all)는 ISR 2개라 계속 되고, 읽기도 새 리더에서 계속 된다.
-
-2. 컨트롤러 과반이 사라져 리더 선출, 토픽 생성 같은 메타데이터 작업이 멈춘다. 남은 노드가 리더인 파티션도 ISR이 1개라 acks=all 쓰기가 거절된다.
-
-3. 쿼럼 상태(리더, 투표자), 주요 토픽의 리더와 ISR, 주요 컨슈머 그룹의 랙. Connect를 쓴다면 커넥터 상태도 같이 남긴다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, 기본 운영: <https://kafka.apache.org/41/operations/basic-kafka-operations/>

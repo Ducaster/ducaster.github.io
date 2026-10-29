@@ -166,26 +166,6 @@ Supported는 이 프로그램이 지원하는 범위, Finalized는 클러스터�
 | 결합 모드 | process.roles=broker,controller. 한 프로세스가 두 역할을 함 |
 | metadata.version | 클러스터가 쓰는 메타데이터 형식 버전. kafka-features로 올린다 |
 
-## 복습 문제
-
-**1.** 컨트롤러가 5대인 클러스터에서 동시에 몇 대까지 죽어도 메타데이터를 바꿀 수 있는가?
-
-**2.** 지금 메타데이터 로그의 리더가 어느 노드인지 확인하는 명령을 적어라.
-
-**3.** 결합 모드 3노드 중 두 노드를 내리면 어떤 일이 생기는가?
-
-## 답과 풀이
-
-1. 과반(3대)이 남아야 하므로 2대까지다.
-
-2. describe --status의 LeaderId를 본다.
-
-```bash
-bin/kafka-metadata-quorum.sh --bootstrap-server localhost:19092 describe --status | grep LeaderId
-```
-
-3. 컨트롤러 과반이 사라져 메타데이터를 바꿀 수 없다. 리더 선출, 토픽 생성 같은 작업이 멈춘다. 데이터 복제본이 남아 있어도 클러스터가 정상적으로 동작하지 못한다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, KRaft: <https://kafka.apache.org/41/operations/kraft/>

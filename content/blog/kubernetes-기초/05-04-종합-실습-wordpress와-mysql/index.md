@@ -291,28 +291,6 @@ kubectl -n wp get pods -w              # 둘 다 새 이름으로 다시 뜬다
 | 동적 프로비저닝 | PVC를 만들면 StorageClass가 PV를 자동으로 만들어 주는 것 |
 | readinessProbe | 준비가 안 된 파드를 서비스에서 빼 두는 검사 |
 
-## 복습 문제
-
-**1.** wordpress 디플로이먼트의 복제본을 2개로 늘리면 무슨 일이 생기는지 예상하고 확인해라.
-
-**2.** MySQL 비밀번호를 바꾸려면 무엇을 고치고 무엇을 다시 시작해야 하는지 적어라.
-
-**3.** wp 네임스페이스 전체를 지운 뒤 같은 YAML로 다시 올리면 예전 글이 보이는지 확인해라.
-
-## 답과 풀이
-
-1. 두 번째 파드가 다른 노드에 배치되면 RWO PVC를 붙이지 못해 ContainerCreating에 머문다(Multi-Attach 오류). 같은 노드면 뜨지만, 여러 파드가 같은 파일을 쓰는 건 RWX 스토리지가 있어야 안전하다.
-
-```bash
-kubectl -n wp scale deployment wordpress --replicas=2
-kubectl -n wp get pods -o wide
-kubectl -n wp describe pod <새 파드> | tail -5
-```
-
-2. Secret만 바꾸면 안 된다. MySQL은 처음 초기화할 때만 MYSQL_PASSWORD를 쓰기 때문에, DB 안의 사용자 비밀번호도 바꾸고, 환경 변수는 파드를 다시 시작해야 반영된다.
-
-3. 보이지 않는다. 네임스페이스와 함께 PVC가 지워지고 회수 정책이 Delete라 데이터도 지워졌다.
-
 ## 참고 자료
 
 - Kubernetes 튜토리얼, WordPress와 MySQL 배포: <https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/>

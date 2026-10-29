@@ -132,26 +132,6 @@ bin/kafka-reassign-partitions.sh --bootstrap-server $B --reassignment-json-file 
 | under-replicated | ISR이 복제 계수보다 적은 상태 |
 | synonyms | 설정값이 어디서 왔는지 보여 주는 kafka-configs 출력 항목 |
 
-## 복습 문제
-
-**1.** 리더가 없는 파티션만 찾는 명령을 적어라.
-
-**2.** 그룹 billing의 랙이 계속 늘어난다. 확인할 것 두 가지와 대응 방법을 적어라.
-
-**3.** 브로커를 3대에서 4대로 늘렸다. 기존 토픽 orders의 파티션이 새 브로커로 옮겨 가게 하려면?
-
-## 답과 풀이
-
-1. 
-
-```bash
-bin/kafka-topics.sh --bootstrap-server $B --describe --unavailable-partitions
-```
-
-2. --members로 컨슈머 수가 파티션 수보다 적은지, --state로 리밸런스가 반복되고 있는지 본다. 컨슈머를 파티션 수까지 늘리거나 처리 속도를 높이고, 그래도 모자라면 파티션을 늘린다.
-
-3. kafka-reassign-partitions로 --generate에 --broker-list "1,2,3,4"를 줘서 계획을 만들고, --execute, --verify 순으로 적용한다.
-
 ## 참고 자료
 
 - Apache Kafka 문서, 기본 운영: <https://kafka.apache.org/41/operations/basic-kafka-operations/>

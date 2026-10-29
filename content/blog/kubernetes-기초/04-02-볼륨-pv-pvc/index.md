@@ -159,41 +159,6 @@ kubectl get pv                                               # 회수 정책 Del
 | 동적 프로비저닝 | PVC가 생기면 StorageClass가 PV를 만들어 주는 것 |
 | 회수 정책 | PVC가 지워졌을 때 PV와 데이터를 어떻게 할지(Delete, Retain) |
 
-## 복습 문제
-
-**1.** 같은 파드의 두 컨테이너가 파일을 주고받게 emptyDir을 붙이고, 파드를 지웠다 만들면 파일이 남는지 확인해라.
-
-**2.** 500Mi PVC notes를 만들고 nginx:1.27 파드 site가 /usr/share/nginx/html에 쓰게 해라. PVC가 언제 Bound가 되는지 확인해라.
-
-**3.** notes의 PV 회수 정책을 Retain으로 바꾼 뒤 PVC를 지우면 PV가 어떤 상태가 되는지 확인해라.
-
-## 답과 풀이
-
-1. emptyDir은 파드와 같이 사라지니 파일이 남지 않는다. 남겨야 하면 PVC를 쓴다.
-
-2. WaitForFirstConsumer라 파드를 만든 뒤에 Bound가 된다.
-
-```bash
-kubectl create -f - <<'YAML'
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata: {name: notes}
-spec: {accessModes: [ReadWriteOnce], resources: {requests: {storage: 500Mi}}}
-YAML
-kubectl get pvc notes                    # Pending
-kubectl run site --image=nginx:1.27 --overrides='{"spec":{"volumes":[{"name":"n","persistentVolumeClaim":{"claimName":"notes"}}],"containers":[{"name":"site","image":"nginx:1.27","volumeMounts":[{"name":"n","mountPath":"/usr/share/nginx/html"}]}]}}'
-kubectl get pvc notes -w                 # Bound
-```
-
-3. Retain이면 PV가 지워지지 않고 Released로 남는다. 그 PV를 다시 쓰려면 관리자가 claimRef를 지우거나 새 PV를 만들어야 한다.
-
-```bash
-PV=$(kubectl get pvc notes -o jsonpath='{.spec.volumeName}')
-kubectl patch pv $PV -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
-kubectl delete pod site && kubectl delete pvc notes
-kubectl get pv $PV                       # STATUS Released
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 볼륨: <https://kubernetes.io/docs/concepts/storage/volumes/>

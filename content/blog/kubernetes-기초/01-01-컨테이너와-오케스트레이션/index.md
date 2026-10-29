@@ -144,33 +144,6 @@ Docker Swarm, Nomad, AWS ECS 같은 오케스트레이터도 있지만, 클라�
 | 컨테이너 런타임 | 컨테이너를 실제로 만들고 실행하는 프로그램(containerd, CRI-O, runc) |
 | CRI | Container Runtime Interface. kubelet과 런타임 사이의 약속 |
 
-## 복습 문제
-
-**1.** 메모리 상한 64MiB인 nginx:1.27 컨테이너를 띄우고, 상한이 걸렸는지 확인해라.
-
-**2.** python:3.12-slim 이미지가 레이어 몇 개로 이루어졌는지, 각 레이어를 어떤 명령이 만들었는지 확인해라.
-
-**3.** 쿠버네티스 노드에서 컨테이너를 실제로 띄우는 순서를 kubelet부터 적어라.
-
-## 답과 풀이
-
-1. docker stats의 LIMIT 열을 본다.
-
-```bash
-docker run -d --name small --memory 64m nginx:1.27
-docker stats --no-stream small          # MEM USAGE / LIMIT: ... / 64MiB
-docker rm -f small
-```
-
-2. history는 레이어와 그 레이어를 만든 명령을 위에서부터(최신 순) 보여 준다. 크기가 0B인 줄은 메타데이터만 바꾼 명령(ENV, CMD 등)이다.
-
-```bash
-docker pull python:3.12-slim
-docker image history python:3.12-slim
-```
-
-3. kubelet → CRI(gRPC) → containerd(또는 CRI-O) → runc → 컨테이너 프로세스. runc가 namespace와 cgroup을 만든 뒤 프로세스를 실행한다.
-
 ## 참고 자료
 
 - Kubernetes 문서, 컨테이너: <https://kubernetes.io/docs/concepts/containers/>

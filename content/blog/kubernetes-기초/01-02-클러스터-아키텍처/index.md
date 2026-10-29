@@ -150,40 +150,6 @@ kubectl get --raw='/readyz?verbose' | tail -3          # API 서버 상태 점�
 | 스태틱 파드 | API 서버가 아니라 kubelet이 로컬 YAML을 보고 직접 띄우는 파드 |
 | 바인딩 | 스케줄러가 파드에 노드를 지정하는 것 |
 
-## 복습 문제
-
-**1.** kube-system의 파드 중 스태틱 파드를 골라내고, 그 YAML이 어디 있는지 확인해라.
-
-**2.** 디플로이먼트 api(nginx:1.27, 복제본 3개)를 만들면서 이벤트를 지켜보고, 어떤 컨트롤러가 무엇을 했는지 순서대로 적어라.
-
-**3.** 스케줄러를 잠깐 멈춘 상태에서 파드를 만들면 어떻게 되는지 kind로 확인하고 원래대로 돌려라.
-
-## 답과 풀이
-
-1. 스태틱 파드는 이름 끝에 노드 이름이 붙고, ownerReferences가 Node다.
-
-```bash
-kubectl get pod -n kube-system kube-scheduler-study-control-plane -o jsonpath='{.metadata.ownerReferences[0].kind}'   # Node
-docker exec study-control-plane ls /etc/kubernetes/manifests
-```
-
-2. ScalingReplicaSet(deployment-controller) → SuccessfulCreate 3번(replicaset-controller) → Scheduled 3번(default-scheduler) → Pulling·Pulled·Created·Started(kubelet).
-
-```bash
-kubectl get events -w &
-kubectl create deployment api --image=nginx:1.27 --replicas=3
-```
-
-3. 스태틱 파드 YAML을 디렉터리 밖으로 옮기면 kubelet이 스케줄러를 내린다. 그동안 만든 파드는 Pending이고, 되돌리면 바로 배정된다.
-
-```bash
-docker exec study-control-plane mv /etc/kubernetes/manifests/kube-scheduler.yaml /tmp/
-kubectl run wait --image=nginx:1.27
-kubectl get pod wait                    # Pending, NODE 없음
-docker exec study-control-plane mv /tmp/kube-scheduler.yaml /etc/kubernetes/manifests/
-kubectl get pod wait -w                 # 곧 Running
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 클러스터 구성 요소: <https://kubernetes.io/docs/concepts/overview/components/>

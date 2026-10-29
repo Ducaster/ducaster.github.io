@@ -160,32 +160,6 @@ kubectl get endpoints web                                  # 다시 3개
 | 스로틀링 | CPU limit에 닿은 컨테이너의 CPU 시간을 커널이 제한하는 것 |
 | 프로브 | kubelet이 컨테이너 상태를 주기적으로 검사하는 방법 |
 
-## 복습 문제
-
-**1.** CPU 요청 200m, 메모리 요청·상한 256Mi인 nginx:1.27 파드 q를 만들고 QoS 클래스를 확인해라.
-
-**2.** 2코어를 요청하는 파드를 만들었더니 Pending이다. 어느 노드에 얼마나 남았는지 확인하는 명령을 적어라.
-
-**3.** readinessProbe가 실패한 파드의 STATUS, READY, RESTARTS가 어떻게 보이는지 적어라.
-
-## 답과 풀이
-
-1. CPU limit이 없어서 requests와 limits가 다 같지 않으니 Burstable이다.
-
-```bash
-kubectl run q --image=nginx:1.27 --overrides='{"spec":{"containers":[{"name":"q","image":"nginx:1.27","resources":{"requests":{"cpu":"200m","memory":"256Mi"},"limits":{"memory":"256Mi"}}}]}}'
-kubectl get pod q -o jsonpath='{.status.qosClass}'     # Burstable
-```
-
-2. 노드마다 Allocated resources의 requests 합계와 Allocatable을 비교한다.
-
-```bash
-kubectl describe nodes | grep -A6 'Allocated resources'
-kubectl describe pod <Pending 파드> | tail -3
-```
-
-3. STATUS는 Running, READY는 0/1, RESTARTS는 그대로다. 재시작하는 건 liveness다.
-
 ## 참고 자료
 
 - Kubernetes 문서, 파드와 컨테이너의 리소스 관리: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>

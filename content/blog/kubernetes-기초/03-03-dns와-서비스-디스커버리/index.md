@@ -113,30 +113,6 @@ kubectl run q --image=busybox:1.36 --rm -it --restart=Never -- nslookup web.blog
 | FQDN | 끝까지 다 쓴 이름. 끝에 점을 붙이면 search를 건너뛴다 |
 | SRV 레코드 | 서비스의 호스트와 포트 번호를 같이 담은 DNS 레코드 |
 
-## 복습 문제
-
-**1.** default 네임스페이스의 파드에서 kube-system의 kube-dns 서비스를 짧은 이름으로 조회해라.
-
-**2.** 파드의 /etc/resolv.conf를 보고, 이름 db를 조회할 때 처음 물어보는 전체 이름을 적어라.
-
-**3.** CoreDNS가 클러스터 밖 이름을 어디로 넘기는지 Corefile에서 찾아라.
-
-## 답과 풀이
-
-1. 다른 네임스페이스라 kube-dns.kube-system까지 쓴다.
-
-```bash
-kubectl run q --image=busybox:1.36 --rm -it --restart=Never -- nslookup kube-dns.kube-system
-```
-
-2. search의 첫 도메인을 붙인 db.default.svc.cluster.local이다(default 네임스페이스 파드 기준).
-
-3. forward 줄이다. kubeadm 기본 Corefile은 forward . /etc/resolv.conf로, CoreDNS 파드가 받은 노드 쪽 DNS로 넘긴다.
-
-```bash
-kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' | grep forward
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 서비스와 파드의 DNS: <https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/>

@@ -183,39 +183,6 @@ TLS를 건 호스트에 HTTP로 들어오면 ingress-nginx가 기본으로 HTTPS
 | TLS Secret | 인증서와 키를 담은 kubernetes.io/tls 타입 Secret |
 | Gateway API | 인그레스의 후속으로 만든 역할 분리형 라우팅 API |
 
-## 복습 문제
-
-**1.** 서비스 foo와 bar가 있다. /api 아래 요청은 bar로, 나머지 모든 요청은 foo로 보내는 인그레스 main을 만들어라.
-
-**2.** 1번 인그레스에서 /api/v1/users와 /apis로 요청하면 각각 어디로 가는지 예상하고 확인해라.
-
-**3.** 인그레스를 만들었는데 curl이 계속 404다. 확인할 순서를 적어라.
-
-## 답과 풀이
-
-1. 더 긴 경로가 먼저 맞으니 /api와 / 두 규칙을 둔다.
-
-```bash
-kubectl create ingress main --class=nginx --rule='/api*=bar:80' --rule='/*=foo:80'
-kubectl get ingress main -o yaml | grep -A3 'path:'
-```
-
-2. /api/v1/users는 /api Prefix에 맞아 bar로, /apis는 경로 단위로 /api와 다르니 / 규칙에 맞아 foo로 간다.
-
-```bash
-curl localhost/api/v1/users     # bar-...
-curl localhost/apis             # foo-...
-```
-
-3. 컨트롤러가 떠 있는지, ingressClassName이 맞는지, 경로·pathType이 맞는지, 뒤의 서비스에 엔드포인트가 있는지 순서로 본다.
-
-```bash
-kubectl -n ingress-nginx get pods
-kubectl get ingress main -o jsonpath='{.spec.ingressClassName}'
-kubectl describe ingress main
-kubectl get endpointslices -l kubernetes.io/service-name=foo
-```
-
 ## 참고 자료
 
 - Kubernetes 문서, 인그레스: <https://kubernetes.io/docs/concepts/services-networking/ingress/>
