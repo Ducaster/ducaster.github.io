@@ -57,7 +57,7 @@ Compliance and Security Frameworks는 10%로 가장 작은 도메인이고 항�
 
 ### NSA·CISA Kubernetes Hardening Guide 원문
 
-PDF 원문(66쪽)을 받아서 목차와 섹션별 권고 요약을 읽었다. 2021년 8월에 1.0, 2022년 3월에 1.1, 2022년 8월에 1.2가 나왔다. 1.2에서는 automountServiceAccountToken 설명과 부록의 ClusterRoleBinding 예시를 고쳤다.
+2021년 8월에 1.0, 2022년 3월에 1.1, 2022년 8월에 1.2가 나왔다. 1.2에서는 automountServiceAccountToken 설명과 부록의 ClusterRoleBinding 예시를 고쳤다.
 
 | 섹션 | 권고 요약 |
 |---|---|

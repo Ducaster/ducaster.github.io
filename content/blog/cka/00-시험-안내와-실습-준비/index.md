@@ -172,48 +172,6 @@ echo 'set expandtab tabstop=2 shiftwidth=2' >> ~/.vimrc
 | --dry-run=client | 서버에 보내지 않고 클라이언트에서만 결과를 만들어 보는 옵션 |
 | k explain | 리소스 필드의 구조와 설명을 보여 주는 명령 |
 
-## 복습 문제
-
-직접 쳐 보는 문제다. 명령형 명령으로 뼈대를 만들고, 필요한 곳만 YAML로 고친다.
-
-**1.** In the namespace `batch`, create a Job named `report` that uses the image `busybox:1.36` and prints the output of `date`. If it fails, the Job must retry at most 2 times.
-
-**2.** Create a CronJob named `cleanup` that runs every day at 03:00. Use the image `busybox:1.36` and the command `echo cleanup`.
-
-**3.** Create an Ingress named `web` that sends all paths for `shop.example.com` to port 80 of the Service `web`.
-
-**4.** Create a Secret named `api-key` from the literal value `API_KEY=abc123`, and check what value is actually stored in its `data`.
-
-## 답과 풀이
-
-1. 재시도 횟수는 명령형 옵션이 없어서 YAML에 backoffLimit을 넣는다.
-
-```bash
-k create ns batch
-k create job report -n batch --image=busybox:1.36 $do -- date > report.yaml
-# spec 아래에 backoffLimit: 2 추가
-k apply -f report.yaml
-```
-
-2. 크론 표현식은 분 시 일 월 요일 순서다.
-
-```bash
-k create cronjob cleanup --image=busybox:1.36 --schedule="0 3 * * *" -- echo cleanup
-```
-
-3. 경로를 /*로 써야 pathType이 Prefix가 되어 모든 하위 경로가 잡힌다.
-
-```bash
-k create ingress web --rule="shop.example.com/*=web:80"
-```
-
-4. data 값은 base64다. 디코딩하면 원래 값이 그대로 보인다.
-
-```bash
-k create secret generic api-key --from-literal=API_KEY=abc123
-k get secret api-key -o jsonpath='{.data.API_KEY}' | base64 -d
-```
-
 ## 참고 자료
 
 - Linux Foundation, CKA 시험 안내: <https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/>

@@ -43,7 +43,7 @@ KCNA 정리를 9월에 마치고 KCSA로 넘어왔다. KCNA의 보안 항목은 
 ![KCSA 도메인별 출제 비중](./attachments/kcsa-domain-weights.png)
 _구성 요소 보안과 보안 기초가 22%씩, 합쳐서 44%다_
 
-공식 범위는 [cncf/curriculum 저장소의 KCSA PDF](https://github.com/cncf/curriculum/blob/master/KCSA%20Curriculum.pdf)에 있다. 파일 이름에 밑줄 대신 공백이 들어 있다. KCNA처럼 범위가 바뀌었다는 공지는 찾지 못했다. 세부 항목은 42개이고, 어느 글에 정리했는지 같이 적었다.
+공식 범위는 [cncf/curriculum 저장소의 KCSA PDF](https://github.com/cncf/curriculum/blob/master/KCSA%20Curriculum.pdf)에 있다. KCNA처럼 범위가 바뀌었다는 공지는 찾지 못했다. 세부 항목은 42개이고, 어느 글에 정리했는지 같이 적었다.
 
 | 도메인 | 비중 | 항목 | 정리한 글 |
 |---|---:|---|---|
@@ -85,7 +85,6 @@ KCSA는 '왜 이 설정을 잠가야 하는가'를 묻는 시험으로 보인다
 ## 헷갈렸던 것들
 
 - KCSA는 선수 조건이 없다. 유효한 CKA가 필요한 건 CKS다.
-- 범위 PDF 파일 이름에 공백이 있어서 저장소에서 검색이 잘 안 된다.
 - 범위에 Authorization 항목은 따로 없지만 RBAC는 나온다고 보고 준비한다.
 - 4C는 지금 kubernetes.io 문서에는 없고 예전 문서에 있던 개념이다.
 
@@ -97,43 +96,6 @@ KCSA는 '왜 이 설정을 잠가야 하는가'를 묻는 시험으로 보인다
 | CKS | Certified Kubernetes Security Specialist. 보안 실기 자격. 유효한 CKA가 필요하다 |
 | 하드닝 | 기본 설정에서 쓰지 않는 기능을 끄고 권한을 좁혀 공격 면을 줄이는 작업 |
 | 공격 면 | 공격자가 노릴 수 있는 입구와 기능의 총합 |
-
-## 복습 문제
-
-**1.** Which two KCSA domains have the largest weights?
-
-- A. Overview of Cloud Native Security and Compliance and Security Frameworks
-- B. Kubernetes Threat Model and Platform Security
-- C. Kubernetes Cluster Component Security and Kubernetes Security Fundamentals
-- D. Platform Security and Compliance and Security Frameworks
-
-**2.** What is the passing score for the KCSA exam?
-
-- A. 75%
-- B. 66%
-- C. 70%
-- D. 80%
-
-**3.** In the KCSA curriculum, which domain includes Pod Security Admission?
-
-- A. Platform Security
-- B. Kubernetes Threat Model
-- C. Overview of Cloud Native Security
-- D. Kubernetes Security Fundamentals
-
-**4.** Which statement about KCSA prerequisites is correct?
-
-- A. KCSA requires an active CKA certification.
-- B. KCSA has no prerequisite.
-- C. KCSA requires a passed KCNA.
-- D. KCSA requires an active CKS certification.
-
-## 답과 풀이
-
-1. **C** 구성 요소 보안과 보안 기초가 22%씩이다.
-2. **A** 75%다. CKA와 CKAD는 66%, CKS는 67%다.
-3. **D** Pod Security Standards와 Pod Security Admission은 Kubernetes Security Fundamentals에 있다.
-4. **B** 선수 조건이 없다. CKS가 유효한 CKA를 요구한다.
 
 ## 참고 자료
 

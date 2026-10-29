@@ -67,7 +67,7 @@ Linux Foundation 안내에는 도메인 구성은 거의 그대로이고 Observa
 - 새로 이름이 붙은 항목: Administration, Troubleshooting, Debugging
 - 이름이 없어진 항목: Service Mesh, Autoscaling, Serverless, Roles and Personas, Open Standards, Prometheus, Cost Management, GitOps, CI/CD
 
-이름이 없어졌다고 출제되지 않는다고 볼 근거는 없다. 서비스 메시는 Networking에, 오토스케일링·서버리스·오픈 표준은 Ecosystem and Principles에, GitOps와 CI/CD는 Application Delivery에, Prometheus와 비용 관리는 Observability에 들어간다고 보고 같이 정리한다. 공식 PDF에는 'KNCA Curriculum', 'Could Native Community' 같은 오타도 그대로 있다.
+이름이 없어졌다고 출제되지 않는다고 볼 근거는 없다. 서비스 메시는 Networking에, 오토스케일링·서버리스·오픈 표준은 Ecosystem and Principles에, GitOps와 CI/CD는 Application Delivery에, Prometheus와 비용 관리는 Observability에 들어간다고 보고 같이 정리한다.
 
 | 지금 항목 | 같이 볼 예전 주제 | 정리한 글 |
 |---|---|---|
@@ -114,43 +114,6 @@ CKA 때는 손이 기억하면 됐는데, 객관식은 비슷한 것끼리 구�
 | CNCF | Cloud Native Computing Foundation. 쿠버네티스, Prometheus 같은 프로젝트를 맡는 재단. Linux Foundation 산하다 |
 | 도메인 | 출제 범위의 큰 묶음. 비중이 붙어 있다 |
 | 커리큘럼 PDF | 도메인과 세부 항목을 적은 공식 문서. cncf/curriculum 저장소에 있다 |
-
-## 복습 문제
-
-**1.** In the current KCNA curriculum, which domain has the largest weight?
-
-- A. Container Orchestration
-- B. Kubernetes Fundamentals
-- C. Cloud Native Architecture
-- D. Cloud Native Application Delivery
-
-**2.** Where is Observability placed in the current KCNA curriculum?
-
-- A. It is a separate domain worth 8%.
-- B. Under Container Orchestration
-- C. Under Kubernetes Fundamentals
-- D. Under Cloud Native Architecture
-
-**3.** A candidate bought a KCNA voucher in October 2025 and takes the exam in August 2026. Which curriculum is used?
-
-- A. The curriculum in effect on the exam date
-- B. The curriculum in effect on the purchase date
-- C. The older curriculum, because the voucher was bought before the change
-- D. The candidate chooses either curriculum.
-
-**4.** Which domain's weight doubled in the curriculum update?
-
-- A. Kubernetes Fundamentals
-- B. Container Orchestration
-- C. Cloud Native Application Delivery
-- D. Cloud Native Architecture
-
-## 답과 풀이
-
-1. **B** Kubernetes Fundamentals가 44%로 가장 크다.
-2. **D** 예전에는 Cloud Native Observability라는 8% 도메인이었는데, 지금은 Cloud Native Architecture의 항목이다.
-3. **A** 안내문에 시험 보는 날만 중요하다고 적혀 있다. 구매일, 재시험 여부는 상관없다.
-4. **C** Cloud Native Application Delivery가 8%에서 16%로 늘었다.
 
 ## 참고 자료
 

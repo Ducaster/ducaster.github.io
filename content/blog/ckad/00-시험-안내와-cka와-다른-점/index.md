@@ -82,29 +82,6 @@ CKAD 문제는 '이 디플로이먼트를 고쳐라'처럼 이미 있는 리소�
 | k replace --force | 리소스를 지우고 같은 파일로 다시 만드는 명령 |
 | k edit | 리소스를 편집기로 열어 바로 수정하는 명령 |
 
-## 복습 문제
-
-**1.** Change the default namespace of the current context to `ckad`, and verify the change.
-
-**2.** Add the environment variable `MODE=prod` to the container of the running Pod `web`.
-
-## 답과 풀이
-
-1. set-context --current로 바꾸고 view --minify로 확인한다.
-
-```bash
-k config set-context --current --namespace=ckad
-k config view --minify | grep namespace
-```
-
-2. 파드의 env는 실행 중에 바꿀 수 없다. YAML로 받아 고친 뒤 지우고 다시 만든다.
-
-```bash
-k get pod web -o yaml > web.yaml
-# containers[0].env에 {name: MODE, value: prod} 추가
-k replace --force -f web.yaml
-```
-
 ## 참고 자료
 
 - Linux Foundation, CKAD 시험 안내: <https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/>
