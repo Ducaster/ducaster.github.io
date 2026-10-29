@@ -43,7 +43,7 @@ Compliance and Security Frameworks는 10%로 가장 작은 도메인이고 항�
 |---|---|---|
 | CIS Kubernetes Benchmark | 설정 기준 | 컨트롤 플레인, etcd, 워커 노드, 정책별로 권고 설정을 나열한다. Level 1(기본), Level 2(더 엄격) 프로필이 있다 |
 | NIST SP 800-190 | 지침 | Application Container Security Guide. 이미지, 저장소, 오케스트레이터, 컨테이너, 호스트 OS의 위험과 대응 |
-| NSA·CISA Kubernetes Hardening Guide | 지침 | 파드 보안, 네트워크 분리, 인증과 인가, 감사 로그, 업그레이드와 설정 관리 |
+| NSA·CISA Kubernetes Hardening Guide | 지침 | 위협 모델, 파드 보안, 네트워크 분리와 하드닝, 인증과 인가, 감사 로그와 위협 탐지, 업그레이드와 애플리케이션 보안. 최신판은 2022년 8월 v1.2 |
 | NIST CSF 2.0 | 조직 보안 프레임워크 | Govern, Identify, Protect, Detect, Respond, Recover 여섯 기능 |
 | NIST SP 800-53 | 통제 목록 | 미국 연방 정보 시스템의 보안 통제 카탈로그 |
 | PCI DSS | 업계 표준 | 카드 데이터를 다루는 시스템의 요구 사항 |
@@ -54,6 +54,22 @@ Compliance and Security Frameworks는 10%로 가장 작은 도메인이고 항�
 | FedRAMP | 인증(미국) | 연방 정부가 쓰는 클라우드 서비스 인증 |
 
 컴플라이언스는 '기준에 맞췄다는 증거'를 내는 일이다. 쿠버네티스 쪽에서 증거가 되는 것은 RBAC 설정, 감사 로그, 암호화 설정, 정책 엔진의 위반 보고서, 정기 점검 결과다. 그리고 감사를 통과했다고 안전하다는 뜻은 아니다. 기준은 최소한이다.
+
+### NSA·CISA Kubernetes Hardening Guide 원문
+
+PDF 원문(66쪽)을 받아서 목차와 섹션별 권고 요약을 읽었다. 2021년 8월에 1.0, 2022년 3월에 1.1, 2022년 8월에 1.2가 나왔다. 1.2에서는 automountServiceAccountToken 설명과 부록의 ClusterRoleBinding 예시를 고쳤다.
+
+| 섹션 | 권고 요약 |
+|---|---|
+| 파드 보안 | non-root로 실행, 가능하면 불변(읽기 전용) 파일 시스템, 이미지 취약점과 설정 오류 스캔. privileged, hostPID, hostIPC, hostNetwork, allowedHostPath를 막고 root 실행과 root로의 권한 상승을 거부한다. SELinux, AppArmor, seccomp로 앱을 하드닝한다 |
+| 네트워크 분리와 하드닝 | 방화벽과 RBAC로 컨트롤 플레인 접근을 막고 컨트롤 플레인과 노드의 네트워크를 나눈다. etcd 접근을 더 좁히고 저장 암호화, 별도 TLS 인증서를 쓴다. 구성 요소 사이는 TLS로 인증하고 암호화한다. NetworkPolicy로 격리하고 명시적인 거부 정책을 둔다. 자격 증명은 설정 파일이 아니라 암호화한 Secret에 둔다 |
+| 인증과 인가 | 익명 로그인을 끈다. 강한 사용자 인증을 쓰고, 사용자, 관리자, 개발자, ServiceAccount, 인프라 팀마다 따로 만든 RBAC 역할을 준다 |
+| 감사 로그와 위협 탐지 | 감사 로그를 켠다. 노드나 파드, 컨테이너가 죽어도 남도록 로그를 보존하고 클러스터 밖에 모은다. 환경 전체(API 감사, 메트릭, 앱 로그, seccomp 로그, 저장소 감사 로그)에서 로그를 남기고 모니터링과 알림을 붙인다 |
+| 업그레이드와 애플리케이션 보안 | 보안 패치를 바로 적용하고, 취약점 스캔과 침투 테스트를 정기적으로 하고, 안 쓰는 구성 요소는 지운다. CIS Benchmark를 따르라고도 적혀 있다 |
+
+가이드가 기본값을 짚은 곳이 세 군데 있어서 따로 적어 둔다. 익명 로그인은 기본으로 켜져 있고(enabled by default), 감사 로그는 기본으로 꺼져 있고(disabled by default), Secret은 기본으로 암호화되지 않는다. 다른 네임스페이스의 파드와 서비스도 따로 막지 않으면 서로 통신된다는 점도 같이 나온다.
+
+2022년 문서라서 지금과 다른 부분이 있다. Pod Security Admission을 1.23에서 기본으로 켜진 beta 기능으로 소개하고, 부록 C와 D에 PodSecurityPolicy 설명과 예시를 싣고 있다. PSA는 1.25에서 GA가 됐고 PSP는 같은 1.25에서 제거됐다. 그래서 PSP 부록은 어떤 필드를 막아야 하는지 보는 용도로만 읽었다. 컨트롤 플레인 포트 표(6443, 2379-2380, 10250, 10259, 10257)와 워커 노드 포트 표(10250, 30000-32767)는 지금 문서와 같다.
 
 ## 2. 위협 모델링 프레임워크
 
@@ -127,6 +143,8 @@ trivy config ./manifests                         # 매니페스트 설정 오류
 ## 헷갈렸던 것들
 
 - kube-bench는 CIS만, Kubescape는 NSA·CISA, MITRE, CIS 등 여러 프레임워크로 점검한다.
+- NSA·CISA 가이드가 짚은 기본값: 익명 로그인은 켜져 있고, 감사 로그는 꺼져 있고, Secret은 암호화되지 않는다.
+- NSA·CISA 가이드의 PSP 부록은 1.25에서 제거된 기능 이야기다. 지금은 PSA를 쓴다.
 - STRIDE의 R은 Repudiation(부인)이고 감사 로그로 막는다.
 - GDPR과 HIPAA는 법, PCI DSS는 업계 표준, CIS Benchmark는 설정 기준이다.
 - NIST SP 800-190은 컨테이너, SP 800-218은 안전한 개발(SSDF), SP 800-53은 통제 목록이다.
@@ -198,6 +216,13 @@ trivy config ./manifests                         # 매니페스트 설정 오류
 - C. CIS Benchmarks are laws.
 - D. An SBOM automatically fixes vulnerabilities.
 
+**8.** According to the NSA and CISA Kubernetes Hardening Guide, which of the following is disabled by default and should be enabled?
+
+- A. Anonymous requests to the API server
+- B. Audit logging
+- C. Communication between Pods in different namespaces
+- D. Automatic mounting of ServiceAccount tokens into Pods
+
 ## 답과 풀이
 
 1. **C** kube-bench가 CIS Benchmark 항목을 점검한다.
@@ -207,6 +232,7 @@ trivy config ./manifests                         # 매니페스트 설정 오류
 5. **C** Kubescape다. kube-bench와 Trivy는 Aqua Security의 도구이고 CNCF 프로젝트가 아니다.
 6. **D** MITRE ATT&CK이다.
 7. **A** 기준은 최소한이다. 쿠버네티스가 기본으로 어떤 인증을 만족하지도 않는다.
+8. **B** 가이드는 감사 로그가 기본으로 꺼져 있다고 적고 켜라고 권한다. 익명 요청, 다른 네임스페이스 파드 사이의 통신, ServiceAccount 토큰 자동 마운트는 기본으로 허용돼 있어서 오히려 막거나 줄일 대상이다.
 
 ## 참고 자료
 

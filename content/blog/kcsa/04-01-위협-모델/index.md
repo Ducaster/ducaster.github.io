@@ -60,6 +60,16 @@ flowchart TB
 
 위협 모델링은 이런 그림을 그려 놓고, 경계를 넘는 화살표마다 질문한다. 누가 무엇으로 인증하나, 그 요청은 인가되나, 넘어가는 데이터는 암호화되나, 넘어가는 게 무엇인가(이미지, 토큰, 자격 증명). 점선이 공격자가 자주 쓰는 길이다. 파드 안에서 ServiceAccount 토큰으로 API 서버에 닿고, 메타데이터 엔드포인트로 클라우드 자격 증명에 닿는다. CI/CD도 경계다. 배포 자격 증명이 털리면 클러스터에 무엇이든 올릴 수 있다.
 
+그림과 같이 봐야 하는 게 누가 들어오느냐다. NSA·CISA Kubernetes Hardening Guide는 쿠버네티스가 침해되는 흔한 출처를 세 가지로 나눈다.
+
+| 출처 | 가이드에 나온 예 |
+|---|---|
+| 공급망 | 서드파티 앱과 의존성에 섞인 악성 코드, 컨테이너 런타임의 취약점(컨테이너 사이 격리가 깨진다), 노드와 컨트롤 플레인을 이루는 기반 시스템의 침해 |
+| 악의적 공격자 | 접근 통제 없이 노출된 컨트롤 플레인 구성 요소, 워커 노드의 kubelet과 kube-proxy, 클러스터 밖에서 닿는 애플리케이션 |
+| 내부자 | 관리자, 애플리케이션 사용자, 클라우드나 인프라 제공자(물리 서버와 하이퍼바이저에 접근할 수 있다) |
+
+내부자 항목에서 가이드는 쿠버네티스에 2인 승인 같은 통제가 없다는 점을 짚는다. 클러스터를 장악할 수 있는 관리자 계정이 최소 하나는 있어야 하니, RBAC로 민감한 권한을 좁히는 수밖에 없다. 공격 동기로는 데이터 탈취 말고도 연산 자원 탈취(주로 암호화폐 채굴)와 서비스 거부를 든다.
+
 ## 2. 공격이 이어지는 경로
 
 {{< mermaid >}}
@@ -157,6 +167,7 @@ MITRE ATT&CK Containers 매트릭스의 전술 이름과 KCSA 항목을 맞춰 �
 ## 헷갈렸던 것들
 
 - 신뢰 경계는 '권한이나 신뢰 수준이 바뀌는 선'이다. 같은 파드 안의 컨테이너 사이는 경계가 아니다.
+- NSA·CISA 가이드의 침해 출처 세 가지는 공급망, 악의적 공격자, 내부자다. 내부자에는 클라우드나 인프라 제공자도 들어간다.
 - 지속성의 예는 DaemonSet, CronJob, 스태틱 파드, 웹훅, RBAC 바인딩, 기한 없는 토큰이다.
 - 포크 폭탄은 CPU limits로는 못 막고 PID 제한이 필요하다.
 - 스태틱 파드는 API 서버를 거치지 않아서 어드미션 정책이 걸리지 않는다.
@@ -233,6 +244,13 @@ MITRE ATT&CK Containers 매트릭스의 전술 이름과 KCSA 항목을 맞춰 �
 - C. Sniffing network traffic
 - D. Tampering with images
 
+**9.** The NSA and CISA Kubernetes Hardening Guide describes three common sources of compromise in Kubernetes. Which set matches the guide?
+
+- A. Spoofing, tampering, and repudiation
+- B. The control plane, worker nodes, and containerized applications
+- C. Cluster, container, and code
+- D. Supply chain risks, malicious threat actors, and insider threats
+
 ## 답과 풀이
 
 1. **A** 새 파드마다 백도어를 심어 접근을 유지하는 지속성이다.
@@ -243,10 +261,12 @@ MITRE ATT&CK Containers 매트릭스의 전술 이름과 KCSA 항목을 맞춰 �
 6. **A** 메타데이터 엔드포인트에서 노드의 클라우드 자격 증명을 가져갈 수 있다.
 7. **C** Falco는 런타임 탐지 도구다. kube-bench는 CIS 설정 점검, Trivy는 취약점과 설정 스캐너다.
 8. **B** 파드를 만들 수 있으면 그 네임스페이스의 아무 ServiceAccount로나 돌릴 수 있다.
+9. **D** 가이드가 든 세 출처다. A는 STRIDE의 앞 세 글자, B는 가이드에서 악의적 공격자가 노리는 대상으로 나오는 것, C는 4C에서 클라우드를 뺀 것이다.
 
 ## 참고 자료
 
 - MITRE ATT&CK, Containers 매트릭스: <https://attack.mitre.org/matrices/enterprise/containers/>
+- NSA·CISA, Kubernetes Hardening Guide v1.2(PDF): <https://media.defense.gov/2022/Aug/29/2003066362/-1/-1/0/CTR_KUBERNETES_HARDENING_GUIDANCE_1.2_20220829.PDF>
 - Microsoft, Threat Matrix for Kubernetes: <https://microsoft.github.io/Threat-Matrix-for-Kubernetes/>
 - Kubernetes 문서, 보안 체크리스트: <https://kubernetes.io/docs/concepts/security/security-checklist/>
 - Kubernetes 문서, RBAC 모범 사례: <https://kubernetes.io/docs/concepts/security/rbac-good-practices/>
