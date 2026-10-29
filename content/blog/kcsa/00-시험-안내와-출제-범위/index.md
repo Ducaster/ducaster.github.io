@@ -1,5 +1,5 @@
 ---
-title: '[KCSA] 시험 안내와 출제 범위: 6개 도메인, 44개 항목'
+title: '[KCSA] 시험 안내와 출제 범위: 6개 도메인, 42개 항목'
 date: '2026-10-03T15:10:00+09:00'
 categories:
 - KCSA
@@ -23,7 +23,7 @@ KCNA 정리를 9월에 마치고 KCSA로 넘어왔다. KCNA의 보안 항목은 
 - 온라인 감독 객관식 60문항, 90분이다. 75% 이상이면 합격이고, 재시험 1회가 포함돼 있다. 자격은 2년 유효하다.
 - 선수 조건은 없다. 같은 보안 분야의 실기 시험인 CKS는 유효한 CKA가 있어야 볼 수 있다.
 - 6개 도메인이다. Overview of Cloud Native Security 14%, Kubernetes Cluster Component Security 22%, Kubernetes Security Fundamentals 22%, Kubernetes Threat Model 16%, Platform Security 16%, Compliance and Security Frameworks 10%.
-- 구성 요소 보안과 보안 기초가 합쳐서 44%다. 항목 수도 이 두 도메인이 가장 많다.
+- 구성 요소 보안과 보안 기초가 합쳐서 44%다. 항목 수는 구성 요소 보안이 11개로 가장 많다.
 
 ## 1. 시험 정보 (2026년 10월 기준)
 
@@ -43,7 +43,7 @@ KCNA 정리를 9월에 마치고 KCSA로 넘어왔다. KCNA의 보안 항목은 
 ![KCSA 도메인별 출제 비중](./attachments/kcsa-domain-weights.png)
 _구성 요소 보안과 보안 기초가 22%씩, 합쳐서 44%다_
 
-공식 범위는 [cncf/curriculum 저장소의 KCSA PDF](https://github.com/cncf/curriculum/blob/master/KCSA%20Curriculum.pdf)에 있다. 파일 이름에 밑줄 대신 공백이 들어 있다. KCNA처럼 범위가 바뀌었다는 공지는 찾지 못했다. 세부 항목은 44개이고, 어느 글에 정리했는지 같이 적었다.
+공식 범위는 [cncf/curriculum 저장소의 KCSA PDF](https://github.com/cncf/curriculum/blob/master/KCSA%20Curriculum.pdf)에 있다. 파일 이름에 밑줄 대신 공백이 들어 있다. KCNA처럼 범위가 바뀌었다는 공지는 찾지 못했다. 세부 항목은 42개이고, 어느 글에 정리했는지 같이 적었다.
 
 | 도메인 | 비중 | 항목 | 정리한 글 |
 |---|---:|---|---|
