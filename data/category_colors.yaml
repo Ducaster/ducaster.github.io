@@ -1,0 +1,11 @@
+# 카테고리 페이지(layouts/categories/taxonomy.html)의 카테고리별 강조색.
+# 키는 카테고리 이름을 소문자로 쓴 것. 여기 없는 카테고리는 테마 기본색으로 나온다.
+adsp: "#8B5CF6"
+sqld: "#DB2777"
+aws saa: "#F59E0B"
+cka: "#4F46E5"
+ckad: "#06B6D4"
+kcna: "#10B981"
+kcsa: "#DC2626"
+kubernetes: "#326CE5"
+kafka: "#64748B"
