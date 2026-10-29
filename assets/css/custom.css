@@ -1,8 +1,41 @@
 /* 테마 기본값(5rem) 대신 헤더 글자 높이에 맞춘 크기 */
 .logo svg { width: 2.25rem; height: 2.25rem; }
 
-/* 카테고리 미리보기 카드에서는 태그 줄을 숨겨 요약이 먼저 보이게 함 (글 페이지에는 그대로 표시) */
-.category-preview .article-link--card .flex-row.flex-wrap:has(> a) { display: none; }
+/* 카테고리 페이지 (layouts/categories/taxonomy.html) */
+.cat-summary { margin-top: 0.5rem; color: rgb(var(--color-neutral-500)); }
+.cat-index { margin-top: 1.5rem; display: grid; gap: 0.75rem; padding: 1rem 1.25rem; border-radius: 0.75rem; background: rgb(var(--color-neutral-100)); }
+.dark .cat-index { background: rgb(var(--color-neutral-900)); }
+.cat-index__row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+.cat-index__label { flex: none; width: 6rem; font-size: 0.875rem; font-weight: 700; color: rgb(var(--color-neutral-600)); }
+.dark .cat-index__label { color: rgb(var(--color-neutral-400)); }
+.cat-index ul, .cat-box ul, .cat-box ol { margin: 0; padding: 0; list-style: none; }
+.cat-index ul { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.cat-index a { display: inline-flex; gap: 0.35rem; padding: 0.2rem 0.75rem; border: 1px solid rgb(var(--color-neutral-300)); border-radius: 999px; background: rgb(var(--color-neutral)); font-weight: 600; text-decoration: none; }
+.cat-index a span { color: rgb(var(--color-neutral-500)); font-weight: 400; }
+.cat-index a:hover { border-color: rgb(var(--color-primary-500)); }
+.dark .cat-index a { border-color: rgb(var(--color-neutral-600)); background: rgb(var(--color-neutral-700)); }
+.cat-group { margin-top: 3rem; }
+.cat-group__title { padding-bottom: 0.5rem; border-bottom: 2px solid rgb(var(--color-primary-500)); font-size: 1.5rem; font-weight: 800; }
+.cat-grid { margin-top: 1.25rem; display: grid; gap: 1rem; }
+@media (min-width: 768px) { .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cat-box { scroll-margin-top: 1.5rem; padding: 1rem 1.25rem; border: 1px solid rgb(var(--color-neutral-200)); border-top: 4px solid rgb(var(--color-primary-500)); border-radius: 0.75rem; word-break: keep-all; }
+.dark .cat-box { border-color: rgb(var(--color-neutral-700)); border-top-color: rgb(var(--color-primary-400)); background: rgb(var(--color-neutral-800)); }
+.cat-box:target { box-shadow: 0 0 0 3px rgb(var(--color-primary-300)); }
+.cat-box__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; }
+.cat-box__head h3 { margin: 0; font-size: 1.25rem; font-weight: 800; }
+.cat-box a { text-decoration: none; word-break: keep-all; }
+.cat-box a:hover { text-decoration: underline; }
+.cat-box__meta { font-size: 0.85rem; color: rgb(var(--color-neutral-500)); }
+.cat-box__series { margin-top: 0.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.cat-box__series a, .cat-box__series span { display: inline-block; padding: 0.1rem 0.6rem; border-radius: 999px; font-size: 0.8rem; background: rgb(var(--color-primary-100)); color: rgb(var(--color-primary-800)); }
+.dark .cat-box__series a, .dark .cat-box__series span { background: rgb(var(--color-primary-900)); color: rgb(var(--color-primary-200)); }
+.cat-box__recent { margin-top: 0.75rem; }
+.cat-box__recent li { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.4rem 0; border-top: 1px dashed rgb(var(--color-neutral-200)); font-size: 0.92rem; }
+.dark .cat-box__recent li { border-top-color: rgb(var(--color-neutral-700)); }
+.cat-box__recent a { min-width: 0; }
+.cat-box__recent time { flex: none; font-size: 0.8rem; font-variant-numeric: tabular-nums; color: rgb(var(--color-neutral-500)); }
+.cat-box__more { display: inline-block; margin-top: 0.5rem; font-size: 0.85rem; font-weight: 600; color: rgb(var(--color-primary-600)); }
+.dark .cat-box__more { color: rgb(var(--color-primary-400)); }
 
 /* Mermaid 그림: 누르면 크게 보기 (layouts/partials/extend-footer.html) */
 pre.mermaid { cursor: zoom-in; }

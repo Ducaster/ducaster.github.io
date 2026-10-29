@@ -1,20 +1,82 @@
 {{ define "main" }}
+  {{/* 카테고리를 묶음별 상자로 보여 준다. 묶음과 순서는 data/category_groups.yaml, 거기 없는 카테고리는 '기타' */}}
+  {{ $terms := .Data.Terms }}
+  {{ $groups := slice }}
+  {{ $listed := slice }}
+  {{ range hugo.Data.category_groups }}
+    {{ $keys := slice }}
+    {{ range .terms }}
+      {{ $k := lower . }}
+      {{ $listed = $listed | append $k }}
+      {{ if index $terms $k }}{{ $keys = $keys | append $k }}{{ end }}
+    {{ end }}
+    {{ if $keys }}{{ $groups = $groups | append (dict "name" .name "keys" $keys) }}{{ end }}
+  {{ end }}
+  {{ $rest := slice }}
+  {{ range $k, $_ := $terms }}{{ if not (in $listed $k) }}{{ $rest = $rest | append $k }}{{ end }}{{ end }}
+  {{ with $rest }}{{ $groups = $groups | append (dict "name" "기타" "keys" .) }}{{ end }}
+  {{ $total := 0 }}
+  {{ range $terms }}{{ $total = add $total (len .) }}{{ end }}
+
   <header class="mt-5">
     <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
+    <p class="cat-summary">카테고리 {{ len $terms }}개, 글 {{ $total }}편</p>
   </header>
-  {{/* 카테고리마다 최근 글 3편을 카드로 미리 보여 준다 (테마 기본은 이름 버튼만 나열) */}}
-  {{ range .Data.Terms.ByCount }}
-    <section class="mt-12">
-      <div class="flex flex-wrap items-end justify-between gap-4">
-        <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral">
-          <a class="hover:underline" href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a>
-          <span class="text-base font-normal text-neutral-500 dark:text-neutral-400">{{ .Count }}</span>
-        </h2>
-        <a class="text-sm font-semibold text-primary-600 hover:underline dark:text-primary-400" href="{{ .Page.RelPermalink }}">전체 글 보기 →</a>
+
+  <nav class="cat-index" aria-label="카테고리 목록">
+    {{ range $groups }}
+      <div class="cat-index__row">
+        <span class="cat-index__label">{{ .name }}</span>
+        <ul>
+          {{ range .keys }}
+            {{ $t := index $terms . }}
+            <li><a href="#cat-{{ anchorize . }}">{{ $t.Page.Title }} <span>{{ len $t }}</span></a></li>
+          {{ end }}
+        </ul>
       </div>
-      <div class="category-preview mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {{ range first 3 .Pages.ByDate.Reverse }}
-          {{ partial "article-link/card.html" . }}
+    {{ end }}
+  </nav>
+
+  {{ range $groups }}
+    <section class="cat-group">
+      <h2 class="cat-group__title">{{ .name }}</h2>
+      <div class="cat-grid">
+        {{ range .keys }}
+          {{ $t := index $terms . }}
+          {{ $pages := $t.Pages.ByDate }}
+          {{ $from := (index $pages 0).Date.Format "2006.01" }}
+          {{ $to := (index $pages (sub (len $pages) 1)).Date.Format "2006.01" }}
+          <article class="cat-box" id="cat-{{ anchorize . }}">
+            <header class="cat-box__head">
+              <h3><a href="{{ $t.Page.RelPermalink }}">{{ $t.Page.Title }}</a></h3>
+              <span class="cat-box__meta">{{ len $pages }}편 · {{ $from }}{{ if ne $from $to }} ~ {{ $to }}{{ end }}</span>
+            </header>
+            {{ $series := slice }}
+            {{ range $pages }}{{ with .Params.series }}{{ $series = $series | append (index . 0) }}{{ end }}{{ end }}
+            {{ if gt (len (uniq $series)) 1 }}
+              <ul class="cat-box__series">
+                {{ range uniq $series }}
+                  {{ $name := . }}
+                  {{ $n := 0 }}
+                  {{ range $series }}{{ if eq . $name }}{{ $n = add $n 1 }}{{ end }}{{ end }}
+                  {{ with index site.Taxonomies.series (lower $name) }}
+                    <li><a href="{{ .Page.RelPermalink }}">{{ $name }} {{ $n }}</a></li>
+                  {{ else }}
+                    <li><span>{{ $name }} {{ $n }}</span></li>
+                  {{ end }}
+                {{ end }}
+              </ul>
+            {{ end }}
+            <ol class="cat-box__recent" aria-label="최근 글">
+              {{ range first 3 $pages.Reverse }}
+                <li>
+                  <a href="{{ .RelPermalink }}">{{ replaceRE "^\\[[^\\]]*\\]\\s*" "" .Title }}</a>
+                  <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006.01.02" }}</time>
+                </li>
+              {{ end }}
+            </ol>
+            <a class="cat-box__more" href="{{ $t.Page.RelPermalink }}">전체 {{ len $pages }}편 보기 →</a>
+          </article>
         {{ end }}
       </div>
     </section>

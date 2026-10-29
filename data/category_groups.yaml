@@ -1,0 +1,6 @@
+# 카테고리 페이지(layouts/categories/taxonomy.html)의 묶음과 순서. 값은 글 머리말의 카테고리 이름이다(대소문자 무관).
+# 여기 없는 카테고리는 '기타' 묶음에 나온다.
+- name: 자격증 공부
+  terms: [ADsP, SQLD, AWS SAA, CKA, CKAD, KCNA, KCSA]
+- name: 기술 노트
+  terms: [Kubernetes, Kafka]
