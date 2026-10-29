@@ -37,6 +37,7 @@
           <h2><a href="{{ $t.Page.RelPermalink }}"><i aria-hidden="true"></i>{{ $t.Page.Title }}</a></h2>
           <span class="cat-box__count">{{ len $pages }}편</span>
         </header>
+        <div class="cat-box__meta">
         <p class="cat-box__period">{{ $from }}{{ if ne $from $to }} – {{ $to }}{{ end }}</p>
         {{ $series := slice }}
         {{ range $pages }}{{ with .Params.series }}{{ $series = $series | append (index . 0) }}{{ end }}{{ end }}
@@ -54,9 +55,11 @@
             {{ end }}
           </ul>
         {{ end }}
+        </div>
         <ol class="cat-box__recent" aria-label="최근 글">
           {{ range first 3 $pages.Reverse }}
-            <li><a href="{{ .RelPermalink }}"><span>{{ replaceRE "^\\[[^\\]]*\\]\\s*" "" .Title }}</span><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006.01.02" }}</time></a></li>
+            {{ $title := replaceRE "^\\[[^\\]]*\\]\\s*" "" .Title }}
+            <li><a href="{{ .RelPermalink }}" title="{{ $title }}"><span>{{ $title }}</span><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006.01.02" }}</time></a></li>
           {{ end }}
         </ol>
         <footer class="cat-box__foot"><a href="{{ $t.Page.RelPermalink }}">전체 {{ len $pages }}편 보기<span aria-hidden="true">→</span></a></footer>
