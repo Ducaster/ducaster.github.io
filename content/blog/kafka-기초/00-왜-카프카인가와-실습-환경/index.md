@@ -86,7 +86,7 @@ shasum -a 512 kafka_2.13-4.1.0.tgz       # .sha512 파일 값과 같은지 본�
 tar xzf kafka_2.13-4.1.0.tgz && cd kafka_2.13-4.1.0
 ```
 
-파일 이름의 2.13은 스칼라 버전이고, 4.1.0이 카프카 버전이다. 단일 노드 설정은 config/server.properties에 이미 들어 있다. 핵심 줄만 뽑아 봤다.
+파일 이름의 2.13은 스칼라 버전이고, 4.1.0이 카프카 버전이다. 단일 노드 설정은 config/server.properties에 이미 들어 있다. 필요한 줄만 뽑아 봤다.
 
 ```text
 process.roles=broker,controller

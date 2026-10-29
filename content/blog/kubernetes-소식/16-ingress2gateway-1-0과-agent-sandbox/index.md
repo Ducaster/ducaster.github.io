@@ -151,7 +151,7 @@ AI 에이전트는 웹 서버와 성격이 다르다. 혼자 돌고(싱글턴), 
 | 고정된 식별자 | 샌드박스마다 고정 호스트 이름과 네트워크 식별자. 에이전트끼리 찾을 수 있다 |
 | 확장(Extensions) | SandboxTemplate으로 틀을 정하고, SandboxClaim으로 요청하면 SandboxWarmPool에 미리 띄워 둔 파드를 바로 넘겨준다 |
 
-파드 하나를 새로 띄우는 데 1초쯤 걸리는데, 에이전트가 대화 중에 1초씩 멈추면 흐름이 끊긴다. 그래서 웜 풀을 둔다고 한다. 설치는 릴리스의 manifest.yaml(핵심)과 extensions.yaml(확장)을 kubectl apply하면 되고, 파이썬 SDK(k8s-agent-sandbox)도 있다. 아직 개발 중인 프로젝트라 최신 릴리스를 쓰라고 한다.
+파드 하나를 새로 띄우는 데 1초쯤 걸리는데, 에이전트가 대화 중에 1초씩 멈추면 흐름이 끊긴다. 그래서 웜 풀을 둔다고 한다. 설치는 릴리스의 manifest.yaml(기본 구성 요소)과 extensions.yaml(확장)을 kubectl apply하면 되고, 파이썬 SDK(k8s-agent-sandbox)도 있다. 아직 개발 중인 프로젝트라 최신 릴리스를 쓰라고 한다.
 
 ## 내 클러스터에서 확인할 것
 

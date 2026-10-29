@@ -150,7 +150,7 @@ spec:
 
 톨러레이션만 있는 파드는 GPU 노드에 갈 수 있을 뿐, 일반 노드로도 간다. 'GPU 노드에는 GPU 파드만, GPU 파드는 GPU 노드에만' 두려면 테인트와 톨러레이션에 노드 어피니티까지 같이 쓴다.
 
-쿠버네티스가 알아서 거는 테인트도 있다. 컨트롤 플레인 노드의 `node-role.kubernetes.io/control-plane:NoSchedule`, 노드에 문제가 생겼을 때의 `node.kubernetes.io/not-ready`, `node.kubernetes.io/unreachable`(NoExecute)이다. 파드에는 이 두 NoExecute 테인트를 300초 견디는 톨러레이션이 기본으로 붙는다. 노드가 끊기고 5분쯤 지나야 파드가 다른 노드로 옮겨 가는 이유다.
+쿠버네티스가 알아서 거는 테인트도 있다. 컨트롤 플레인 노드의 `node-role.kubernetes.io/control-plane:NoSchedule`, 노드에 문제가 생겼을 때의 `node.kubernetes.io/not-ready`, `node.kubernetes.io/unreachable`(NoExecute)이다. 파드에는 이 두 NoExecute 테인트를 300초 견디는 톨러레이션이 기본으로 붙는다. 그래서 노드가 끊기고 5분쯤 지나야 파드가 다른 노드로 옮겨 간다.
 
 ## 5. 고르게 퍼뜨리기: topologySpreadConstraints
 

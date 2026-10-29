@@ -147,7 +147,7 @@ _들어오는 요청이 순간적으로 처리 능력을 넘으면 넘친 만큼
 |---|---|
 | 예약된 동시성 | 함수 하나가 쓸 동시 실행 수를 확보하고 상한도 건다. 다른 함수가 동시성을 다 써도 이 함수는 실행된다 |
 | 프로비저닝된 동시성 | 미리 초기화된 실행 환경을 준비해 콜드 스타트 지연을 없앤다 |
-| 호출 방식 | 동기(API Gateway, ALB), 비동기(S3, SNS, EventBridge — 실패 시 두 번 재시도, 실패 대상이나 DLQ 지정), 이벤트 소스 매핑(SQS, Kinesis, DynamoDB Streams를 Lambda가 폴링) |
+| 호출 방식 | 동기(API Gateway, ALB), 비동기(S3, SNS, EventBridge: 실패 시 두 번 재시도, 실패 대상이나 DLQ 지정), 이벤트 소스 매핑(SQS, Kinesis, DynamoDB Streams를 Lambda가 폴링) |
 | VPC 연결 | 프라이빗 서브넷의 RDS 등에 접근할 수 있다. 인터넷에 나가려면 NAT 게이트웨이가 필요하다 |
 
 15분이 넘는 작업은 Lambda에 맞지 않는다. ECS(Fargate), AWS Batch, Step Functions로 나누는 방식을 고른다.

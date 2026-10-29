@@ -25,7 +25,7 @@ series_order: 7
 ## 요약
 
 - 기능 개선 58개다. 23개 stable, 22개 beta, 13개 alpha다.
-- DRA의 핵심이 GA가 되면서 resource.k8s.io/v1이 기본으로 켜졌다. 앞으로 깨지는 변경은 없다고 못 박았다.
+- DRA 기본 기능이 GA가 되면서 resource.k8s.io/v1이 기본으로 켜졌다. 앞으로 깨지는 변경은 없다고 못 박았다.
 - 노드 swap(LimitedSwap)이 stable이 됐다. 파드는 자기 메모리 limit 안에서만 swap을 쓴다.
 - kubectl 개인 설정 파일 kuberc가 beta가 됐다. KYAML 출력은 alpha라 KUBECTL_KYAML=true를 켜야 -o kyaml이 된다.
 - kubelet의 cgroupDriver 수동 설정이 지원 중단됐고, containerd 1.x를 지원하는 마지막 쿠버네티스는 v1.35라고 예고했다.
@@ -37,7 +37,7 @@ _v1.34는 alpha가 줄고 stable이 늘었다. 새 기능을 들이기보다 있
 
 | 기능 | 단계 | 한 줄 정리 |
 |---|---|---|
-| DRA 핵심(ResourceClaim, DeviceClass, ResourceSlice) | stable | GPU·TPU·NIC 같은 장치를 요청하고 할당한다. v1 API가 기본 |
+| DRA 기본 기능(ResourceClaim, DeviceClass, ResourceSlice) | stable | GPU·TPU·NIC 같은 장치를 요청하고 할당한다. v1 API가 기본 |
 | 이미지 풀에 ServiceAccount 토큰 사용 | beta | kubelet 자격 증명 공급자가 파드마다 짧게 사는 토큰으로 레지스트리 인증 |
 | 노드 swap(LimitedSwap) | stable | v1.22에 들어와 alpha·beta를 거쳐 정식 |
 | 파드 단위 requests·limits | beta | 컨테이너 여럿이 파드 전체 예산을 나눠 쓴다. HPA도 지원 |

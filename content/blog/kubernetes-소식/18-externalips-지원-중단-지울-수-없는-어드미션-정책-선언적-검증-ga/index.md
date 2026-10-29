@@ -31,7 +31,7 @@ v1.36 후속 글이 4월 말부터 거의 매일 올라오고 있다. v1.36 릴�
 
 ## 1. Service externalIPs, 왜 없애나
 
-기초 공부 때 kind에서 LoadBalancer 서비스를 만들면 EXTERNAL-IP가 pending으로 남았다. 그 칸은 이번 이야기와 관계가 없다. 이번에 지원 중단된 건 Service spec에 직접 IP를 적는 externalIPs 필드다. 클라우드가 없는 클러스터에서 로드밸런서처럼 쓰려고 만든 초기 기능인데, 문제는 아무 확인 없이 아무 IP나 적을 수 있다는 점이다.
+기초 공부 때 kind에서 LoadBalancer 서비스를 만들면 EXTERNAL-IP가 pending으로 남았다. 그 칸은 이번 이야기와 관계가 없다. 이번에 지원 중단된 건 Service spec에 직접 IP를 적는 externalIPs 필드다. 클라우드가 없는 클러스터에서 로드밸런서처럼 쓰려고 만든 초기 기능인데, 아무 확인 없이 아무 IP나 적을 수 있다.
 
 {{< mermaid >}}
 flowchart LR

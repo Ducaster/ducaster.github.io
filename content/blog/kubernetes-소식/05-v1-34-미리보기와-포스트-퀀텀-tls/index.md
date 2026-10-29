@@ -25,7 +25,7 @@ series_order: 5
 ## 요약
 
 - v1.34는 8월 말에 나오고, 제거·지원 중단 항목이 없다. 미리보기 글 기준이라 바뀔 수 있다.
-- DRA(GPU 같은 장치 할당)의 핵심이 stable을 목표로 한다. 그러면 resource.k8s.io/v1 API가 기본으로 켜진다.
+- DRA(GPU 같은 장치 할당)의 기본 기능이 stable을 목표로 한다. 그러면 resource.k8s.io/v1 API가 기본으로 켜진다.
 - kubectl get -o kyaml 출력이 들어올 예정이다. KYAML은 문자열을 항상 큰따옴표로 감싸고 {}와 []를 쓰는, 더 헷갈리지 않는 YAML 부분집합이다.
 - 쿠버네티스 v1.33은 Go 1.24로 빌드돼, 따로 설정하지 않아도 TLS에서 하이브리드 포스트 퀀텀 키 교환(X25519MLKEM768)을 쓴다.
 - v1.32(Go 1.23) 서버에 kubectl v1.33(Go 1.24)으로 붙으면 서로 다른 PQC 알고리즘이라 고전 암호로 조용히 떨어진다.
@@ -34,7 +34,7 @@ series_order: 5
 
 | 기능 | 예정 단계 | 한 줄 정리 |
 |---|---|---|
-| DRA 핵심(구조화된 파라미터) | stable | ResourceClaim, DeviceClass, ResourceSlice로 GPU 같은 장치를 요청·할당한다 |
+| DRA 기본 기능(구조화된 파라미터) | stable | ResourceClaim, DeviceClass, ResourceSlice로 GPU 같은 장치를 요청·할당한다 |
 | 이미지 풀에 ServiceAccount 토큰 사용 | beta, 기본 켜짐 | 오래 사는 imagePullSecrets 대신 파드마다 짧게 사는 토큰으로 레지스트리 인증 |
 | 디플로이먼트 podReplacementPolicy | alpha | 옛 파드가 종료를 시작하자마자 새 파드를 만들지, 완전히 끝날 때까지 기다릴지 고른다 |
 | kubelet·API 서버 트레이싱 | stable | OpenTelemetry로 API 서버부터 kubelet, 런타임까지 한 흐름으로 추적한다 |
