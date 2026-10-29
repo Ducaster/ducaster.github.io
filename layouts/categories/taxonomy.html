@@ -35,7 +35,6 @@
       <article class="cat-box" id="cat-{{ anchorize .key }}" style="--accent: {{ .accent | safeCSS }}">
         <header class="cat-box__head">
           <h2><a href="{{ $t.Page.RelPermalink }}"><i aria-hidden="true"></i>{{ $t.Page.Title }}</a></h2>
-          <span class="cat-box__count">{{ len $pages }}편</span>
         </header>
         <div class="cat-box__meta">
         <p class="cat-box__period">{{ $from }}{{ if ne $from $to }} – {{ $to }}{{ end }}</p>
