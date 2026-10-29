@@ -30,31 +30,10 @@
     {{ range $cats }}
       {{ $t := .term }}
       {{ $pages := .pages }}
-      {{ $from := (index $pages 0).Date.Format "2006.01" }}
-      {{ $to := (index $pages (sub (len $pages) 1)).Date.Format "2006.01" }}
       <article class="cat-box" id="cat-{{ anchorize .key }}" style="--accent: {{ .accent | safeCSS }}">
         <header class="cat-box__head">
           <h2><a href="{{ $t.Page.RelPermalink }}"><i aria-hidden="true"></i>{{ $t.Page.Title }}</a></h2>
         </header>
-        <div class="cat-box__meta">
-        <p class="cat-box__period">{{ $from }}{{ if ne $from $to }} – {{ $to }}{{ end }}</p>
-        {{ $series := slice }}
-        {{ range $pages }}{{ with .Params.series }}{{ $series = $series | append (index . 0) }}{{ end }}{{ end }}
-        {{ if gt (len (uniq $series)) 1 }}
-          <ul class="cat-box__series">
-            {{ range uniq $series }}
-              {{ $name := . }}
-              {{ $n := 0 }}
-              {{ range $series }}{{ if eq . $name }}{{ $n = add $n 1 }}{{ end }}{{ end }}
-              {{ with index site.Taxonomies.series (lower $name) }}
-                <li><a href="{{ .Page.RelPermalink }}">{{ $name }} {{ $n }}</a></li>
-              {{ else }}
-                <li><span>{{ $name }} {{ $n }}</span></li>
-              {{ end }}
-            {{ end }}
-          </ul>
-        {{ end }}
-        </div>
         <ol class="cat-box__recent" aria-label="최근 글">
           {{ range first 3 $pages.Reverse }}
             {{ $title := replaceRE "^\\[[^\\]]*\\]\\s*" "" .Title }}
