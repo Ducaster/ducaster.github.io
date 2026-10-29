@@ -70,7 +70,7 @@ flowchart LR
 | kube-proxy | 노드마다 하나. 서비스 주소로 온 트래픽을 파드로 보내는 규칙(iptables, nftables)을 만든다 | 패킷을 직접 중계하지 않고 커널 규칙만 만든다. Cilium 같은 CNI가 같은 일을 대신하면 없어도 된다 |
 | 컨테이너 런타임 | 이미지를 받아 컨테이너를 실행한다 | kubelet과 CRI로 이야기한다. Docker Engine을 직접 쓰던 dockershim은 v1.24에서 빠졌다 |
 
-노드가 살아 있다는 신호는 kubelet이 `kube-node-lease` 네임스페이스의 Lease 오브젝트를 주기적으로 갱신하는 걸로 보낸다. 갱신이 끊기면 노드 컨트롤러가 노드를 NotReady로 바꾼다.
+노드가 살아 있다는 신호는 kubelet이 `kube-node-lease` 네임스페이스의 Lease 오브젝트를 주기적으로 갱신하는 걸로 보낸다. 갱신이 끊기면 노드 컨트롤러가 노드의 Ready 조건을 Unknown으로 바꾼다. `kubectl get nodes`에서는 이게 NotReady로 보인다.
 
 > **쉬운 설명**
 >

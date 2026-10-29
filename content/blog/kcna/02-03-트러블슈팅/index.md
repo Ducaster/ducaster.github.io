@@ -66,7 +66,7 @@ kubectl port-forward svc/api 8080:80           # 내 PC에서 서비스로 바�
 
 describe의 Last State에 `Reason: OOMKilled`가 보이면 메모리 limits를 넘은 것이다. 노드 전체 메모리가 모자라서 kubelet이 내보낸 경우(Evicted)와 구분한다.
 
-CrashLoopBackOff 상태에서 재시작 간격은 10초에서 시작해 두 배씩 늘어 최대 5분까지 간다. 컨테이너가 10분 동안 문제없이 돌면 처음으로 돌아간다.
+CrashLoopBackOff 상태에서 재시작 간격은 10초에서 시작해 두 배씩 늘어 최대 5분까지 간다. 컨테이너가 10분 동안 문제없이 돌면 처음으로 돌아간다. v1.35부터는 노드마다 kubelet 설정(`crashLoopBackOff.maxContainerRestartPeriod`)으로 최대 간격을 1초에서 300초 사이로 줄일 수 있다(beta). 기본값 자체를 1초 시작, 최대 60초로 줄이는 기능은 아직 alpha라서 기본으로 꺼져 있다.
 
 ![CrashLoopBackOff 재시작 대기 시간](./attachments/k8s-crashloop-backoff.png)
 _재시작마다 대기 시간이 두 배로 늘다가 5분에서 멈춘다_

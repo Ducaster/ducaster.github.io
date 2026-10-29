@@ -106,7 +106,7 @@ ServiceAccount 쪽에서 챙길 것은 이렇다. 파드마다 필요한 권한�
 
 ## 4. 인가와 RBAC
 
-인가 모드는 Node, RBAC, Webhook, ABAC, AlwaysAllow, AlwaysDeny가 있다. 보통 `Node,RBAC`이고, 여러 모드를 걸면 하나라도 허용하면 허용이다. RBAC 규칙은 apiGroups, resources(하위 리소스 포함), verbs, resourceNames로 적는다.
+인가 모드는 Node, RBAC, Webhook, ABAC, AlwaysAllow, AlwaysDeny가 있다. 보통 `Node,RBAC`이다. 여러 모드를 걸면 적은 순서대로 물어서, 처음으로 허용이나 거부를 낸 모드의 판단이 그대로 결과가 된다. 모든 모드가 판단하지 않으면 거부다. Node와 RBAC는 허용만 하고 거부를 내지 않아서 이 둘만 쓰면 하나라도 허용하면 허용인 것과 같지만, Webhook은 거부를 낼 수 있어서 순서가 중요해진다. RBAC 규칙은 apiGroups, resources(하위 리소스 포함), verbs, resourceNames로 적는다.
 
 RBAC에는 거부 규칙이 없어서, 권한이 한번 넓게 나가면 그만큼 열린다. 쿠버네티스 문서의 RBAC 모범 사례가 꼽는 위험한 권한은 이렇다.
 

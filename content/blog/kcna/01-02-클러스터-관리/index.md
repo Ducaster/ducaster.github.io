@@ -89,7 +89,7 @@ apply에는 두 가지가 있다. 기본(client-side) apply는 마지막으로 �
 |---|---|---|
 | 관리형 서비스 | Amazon EKS, Google GKE, Azure AKS | 컨트롤 플레인과 etcd는 클라우드가 운영한다. 나는 노드와 워크로드를 본다(노드까지 맡기는 모드도 있다) |
 | 직접 설치 | kubeadm | 전부 내가 한다. kubeadm은 컨트롤 플레인을 띄우고 노드를 붙이는 일까지만 하고, CNI는 따로 설치한다 |
-| 학습·개발용 | kind, minikube, k3s | kind는 컨테이너를 노드로 쓰고, minikube는 단일 노드 클러스터를 띄우고, k3s는 가벼운 배포판이다 |
+| 학습·개발용 | kind, minikube, k3s | kind는 컨테이너를 노드로 쓰고, minikube는 기본으로 단일 노드 클러스터를 띄우고, k3s는 가벼운 배포판이다 |
 
 kubeadm으로 만든 클러스터는 kube-apiserver, etcd, 스케줄러, 컨트롤러 매니저가 `/etc/kubernetes/manifests`의 스태틱 파드로 돈다. 스태틱 파드는 API 서버가 아니라 그 노드의 kubelet이 파일을 보고 직접 띄우는 파드다. 고가용성 컨트롤 플레인은 보통 컨트롤 플레인 노드 3대를 로드 밸런서 뒤에 두고, etcd를 같은 노드에 두거나(stacked) 따로 둔다(external).
 
@@ -285,7 +285,7 @@ etcd v3.6부터 `etcdctl snapshot restore`는 없어지고 etcdutl로 옮겨 갔
 4. **B** context가 cluster와 user를 묶고 기본 네임스페이스를 붙인다.
 5. **D** 네임스페이스 전체 합계는 ResourceQuota다. LimitRange는 컨테이너 하나 기준이다.
 6. **A** 선언형 방식이다. replace도 파일을 쓰지만 무엇을 할지(교체)는 내가 정하는 명령형이다.
-7. **C** kubeadm은 컨트롤 플레인을 스태틱 파드로 띄운다. kubelet만 시스템 서비스로 돈다.
+7. **C** kubeadm은 컨트롤 플레인을 스태틱 파드로 띄운다. 시스템 서비스로 도는 건 kubelet과 컨테이너 런타임이다.
 
 ## 참고 자료
 
