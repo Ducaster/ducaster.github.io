@@ -23,7 +23,7 @@ series:
 series_order: 5
 ---
 
-Containerization은 예전 범위의 Containers와 Runtime 항목을 합친 것으로 봤다. 컨테이너가 커널 기능으로 격리한 프로세스라는 건 쿠버네티스 기초 때 정리했으니, 이번에는 객관식에 자주 나오는 이름들이 어느 층에 있는지를 잡는 데 집중했다. OCI, CRI, containerd, runc, dockershim이 서로 무슨 관계인지가 계속 헷갈렸다.
+dockershim이 빠진다는 소식을 처음 들었을 때는 Docker로 만든 이미지도 못 쓰게 되는 줄 알았다. 이미지 규격(OCI)과 kubelet이 런타임에 일을 시키는 규격(CRI)은 따로 있고, 빠진 건 Docker Engine과 CRI를 이어 주던 어댑터였다. containerd와 runc까지 이 경계를 기준으로 나눠 적었다.
 
 ## 요약
 

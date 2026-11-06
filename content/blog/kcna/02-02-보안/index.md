@@ -23,7 +23,7 @@ series:
 series_order: 7
 ---
 
-보안은 KCSA에서 따로 깊게 다루는 범위라, KCNA에서는 '무엇이 무엇을 막는가'를 구분하는 데까지 정리했다. 401과 403, Role과 ClusterRole, PSS와 PSA, base64와 암호화처럼 짝으로 묻기 좋은 것들이 많다. CKA 때 RBAC와 NetworkPolicy는 손으로 많이 해 봤는데, 어드미션과 Pod Security는 이름만 알고 있었다.
+401과 403은 둘 다 권한 문제처럼 보이지만 실패한 단계가 다르다. 401은 서버가 요청자를 확인하지 못한 것이고, 403은 확인은 했는데 권한이 없는 것이다. 권한이 있어도 어드미션에서 파드 생성이 거절될 수 있어서, 요청이 지나가는 순서대로 정리했다.
 
 ## 요약
 
@@ -212,20 +212,6 @@ Secret 하나의 크기는 1MiB까지다.
 - PodSecurityPolicy는 v1.25에서 없어졌다. 지금은 PSA다.
 - PSA의 warn과 audit는 파드를 거절하지 않는다. 거절은 enforce만 한다.
 - 변경 어드미션이 검증 어드미션보다 먼저 돈다.
-
-## 용어 정리
-
-| 용어 | 뜻 |
-|---|---|
-| 4C | Cloud, Cluster, Container, Code로 나눈 클라우드 네이티브 보안의 층 |
-| 인증 | 요청한 쪽이 누구인지 확인하는 단계 |
-| 인가 | 그 사람이 그 동작을 해도 되는지 판단하는 단계 |
-| 어드미션 컨트롤러 | 인가 뒤에 요청을 고치거나 거절하는 플러그인 |
-| RBAC | 역할 기반 접근 제어. Role과 Binding으로 권한을 준다 |
-| ServiceAccount | 파드 안의 프로세스가 쓰는 쿠버네티스 신원 |
-| Pod Security Standards | Privileged, Baseline, Restricted 세 단계 파드 보안 기준 |
-| Pod Security Admission | 네임스페이스 라벨로 PSS를 적용하는 내장 어드미션 컨트롤러 |
-| securityContext | 파드나 컨테이너의 사용자, 권한, 커널 기능 설정 |
 
 ## 복습 문제
 

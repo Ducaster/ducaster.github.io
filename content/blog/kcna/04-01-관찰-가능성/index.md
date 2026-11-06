@@ -24,7 +24,7 @@ series:
 series_order: 11
 ---
 
-Observability는 예전 범위에서 8%짜리 도메인이었다가 Cloud Native Architecture 안의 항목이 됐다. 이름은 하나로 줄었지만 예전의 Prometheus와 Cost Management 항목도 여기 들어간다고 보고 같이 정리했다. OpenTelemetry가 올해 5월에 CNCF graduated가 돼서, 예전 자료에 incubating이라고 적힌 건 지금 기준으로 틀렸다.
+`kubectl top`으로 지금 메모리 사용량은 볼 수 있다. 어제 같은 시간에 메모리가 올랐는지, 요청 하나가 어디서 오래 걸렸는지는 다른 도구가 필요하다. 관찰 가능성은 개편 뒤 Cloud Native Architecture에 들어갔고, 예전 목차에 있던 Prometheus와 비용 관리도 함께 다뤘다.
 
 ## 요약
 
@@ -147,10 +147,6 @@ OpenTelemetry는 2019년에 OpenTracing과 OpenCensus가 합쳐져 만들어졌�
 - **오토스케일링**: HPA로 파드를, Cluster Autoscaler나 Karpenter로 노드를 수요에 맞춘다. 빈 노드가 줄어든다.
 - **싼 노드**: 중단돼도 괜찮은 작업은 스팟(선점형) 노드에 둔다.
 - **비용 배분**: 네임스페이스와 라벨(팀, 서비스)별로 비용을 나눠 보여 준다. OpenCost(CNCF incubating)가 쿠버네티스 자원 사용량을 비용으로 바꿔 준다. 이런 문화와 실무를 FinOps라고 부르고, Linux Foundation 산하에 FinOps Foundation이 있다.
-
-> **쉬운 설명**
->
-> 병원으로 보면 지표는 체온과 혈압 그래프, 로그는 진료 기록, 트레이스는 환자 한 명이 접수, 검사, 진료, 수납을 거친 동선과 단계별 대기 시간이다. Prometheus는 정해진 시간마다 병실을 돌며 수치를 재는 간호사다(pull). OpenTelemetry는 모든 검사 장비가 같은 양식으로 결과지를 내게 하는 표준 서식이라, 결과를 어느 병원 시스템(백엔드)에 넣든 서식을 다시 만들 필요가 없다.
 
 ## 헷갈렸던 것들
 

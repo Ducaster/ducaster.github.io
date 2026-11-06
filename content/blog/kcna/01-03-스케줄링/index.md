@@ -21,14 +21,14 @@ series:
 series_order: 4
 ---
 
-스케줄링은 예전 범위에도 있던 항목이다. CKA 때는 YAML 필드 이름을 외우는 게 일이었는데, 이번에는 '왜 이 파드가 이 노드에 갔나, 왜 못 갔나'를 말로 설명할 수 있게 정리했다. 객관식 보기에서 헷갈리게 만드는 지점도 대부분 여기 있다. requests와 limits, 톨러레이션과 어피니티, NoSchedule과 NoExecute 같은 것들이다.
+GPU 노드의 테인트를 견디는 톨러레이션을 적으면 파드가 GPU 노드로 가는 줄 알았다. 실제로는 비어 있는 GPU 노드를 두고 일반 노드로 갈 수도 있다. 톨러레이션은 견딘다는 표시일 뿐이다. CKA 때는 YAML 필드부터 외웠는데, 이번에는 스케줄러가 노드를 거르고 고르는 조건을 중심으로 정리했다.
 
 ## 요약
 
 - 스케줄러는 노드가 정해지지 않은 파드마다 필터링(맞지 않는 노드 거르기), 점수 매기기, 바인딩 순서로 노드를 정한다.
 - 자원이 맞는지는 requests로 판단한다. limits도, 지금 실제 사용량도 아니다.
 - nodeSelector와 노드 어피니티는 파드가 노드를 고르는 조건, 테인트는 노드가 파드를 밀어내는 조건이다. 톨러레이션은 밀어내는 걸 견딘다는 표시일 뿐, 그 노드로 가라는 뜻은 아니다.
-- QoS 클래스는 Guaranteed, Burstable, BestEffort다. 노드 메모리가 모자라면 BestEffort부터 쫓겨난다.
+- QoS 클래스는 Guaranteed, Burstable, BestEffort다. 노드 메모리가 부족할 때의 축출 순서는 실제 사용량과 requests, 파드 우선순위에 따라 달라진다.
 - PriorityClass로 우선순위를 주면, 자리가 없을 때 낮은 파드를 밀어내고(선점) 들어갈 수 있다.
 - topologySpreadConstraints로 존이나 노드에 고르게 퍼뜨린다.
 
@@ -59,13 +59,13 @@ flowchart TB
 
 QoS 클래스는 자원 설정으로 자동으로 정해진다.
 
-| QoS | 조건 | 메모리 부족으로 쫓겨나는 순서 |
-|---|---|---|
-| Guaranteed | 모든 컨테이너가 CPU와 메모리 둘 다 requests와 limits를 같게 적었다 | 가장 나중 |
-| Burstable | Guaranteed는 아니지만 requests나 limits가 하나라도 있다 | 중간 |
-| BestEffort | 어떤 컨테이너에도 requests, limits가 없다 | 가장 먼저 |
+| QoS | 컨테이너 단위로 자원을 지정할 때의 조건 |
+|---|---|
+| Guaranteed | 모든 컨테이너에 CPU와 메모리의 requests와 limits가 있고, 자원별로 두 값이 같다 |
+| Burstable | Guaranteed는 아니지만 CPU나 메모리의 request 또는 limit이 하나라도 있다 |
+| BestEffort | 어떤 컨테이너에도 CPU와 메모리의 requests와 limits가 없다 |
 
-kubelet은 노드 메모리가 기준치 아래로 떨어지면 파드를 축출한다. 사용량이 requests를 넘는지, 우선순위, requests 대비 사용량 순으로 고르기 때문에 결과적으로 BestEffort가 먼저 나가고 Guaranteed가 마지막에 나간다.
+kubelet이 메모리 압박으로 파드를 축출할 때는 실제 사용량이 request를 넘는 파드를 먼저 고른다. 같은 그룹에서는 우선순위와 request 대비 사용량을 따진다. BestEffort 파드는 메모리 request가 0이라 먼저 축출될 가능성이 높지만, 같은 그룹의 Burstable보다 항상 먼저 나가는 것은 아니다. [노드 압박에 의한 축출](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/)
 
 ```yaml
 apiVersion: v1
@@ -215,21 +215,8 @@ description: "결제처럼 먼저 떠야 하는 서비스"
 - NoSchedule은 기존 파드를 남기고, NoExecute는 기존 파드도 내보낸다.
 - CPU limits를 넘으면 스로틀, 메모리 limits를 넘으면 OOMKilled다.
 - Guaranteed는 모든 컨테이너가 CPU와 메모리 둘 다 requests와 limits가 같아야 한다.
-- Pending의 이유는 `kubectl describe pod`의 Events에서 FailedScheduling 메시지로 본다.
+- 파드가 노드에 배정되지 않았다면 `kubectl describe pod`의 Events에서 `FailedScheduling`을 찾는다.
 - 스케줄러는 노드를 만들지도, 배치한 파드를 옮기지도 않는다.
-
-## 용어 정리
-
-| 용어 | 뜻 |
-|---|---|
-| 바인딩 | 스케줄러가 고른 노드를 파드의 nodeName에 기록하는 일 |
-| allocatable | 노드에서 파드에 줄 수 있는 자원. 전체 용량에서 예약분을 뺀 값 |
-| QoS 클래스 | requests와 limits 설정으로 정해지는 파드 등급. 축출 순서에 쓰인다 |
-| 노드 어피니티 | 노드 라벨로 파드가 갈 노드를 고르는 조건 |
-| 테인트 | 노드에 걸어 파드를 밀어내는 표시 |
-| 톨러레이션 | 파드에 붙여 테인트를 견디게 하는 표시 |
-| 선점 | 높은 우선순위 파드를 위해 낮은 파드를 내보내는 일 |
-| topologyKey | 같은 범위로 볼 노드 라벨. hostname이면 노드, zone이면 존 |
 
 ## 복습 문제
 

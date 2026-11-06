@@ -20,7 +20,7 @@ series:
 series_order: 4
 ---
 
-Kubernetes Security Fundamentals(22%)는 항목이 일곱 개라 두 편으로 나눴고, 이 글은 Pod Security Standards, Pod Security Admission, Authentication이다. 범위에 Authorization이라는 항목은 따로 없지만, 인증한 뒤에 무엇을 허락하느냐가 빠지면 이야기가 안 돼서 RBAC도 여기 넣었다. KCNA 때는 세 단계 이름만 외웠는데, 이번에는 단계마다 정확히 무엇을 막는지와 RBAC에서 위험한 권한이 무엇인지를 봤다.
+네임스페이스에 `enforce: restricted`를 적용하면 Restricted를 어기는 Deployment가 생성돼도 파드는 하나도 뜨지 않을 수 있다. 어디서 거절됐는지 알려면 API 서버가 요청자의 신원, 권한, 오브젝트를 각각 어떻게 검사하는지 구분해야 한다. 이 글에는 Pod Security Standards와 Admission, 인증과 인가를 정리했다.
 
 ## 요약
 
@@ -116,8 +116,8 @@ RBAC에는 거부 규칙이 없어서, 권한이 한번 넓게 나가면 그만�
 | pods의 create(워크로드 리소스 포함) | 그 네임스페이스의 아무 Secret이나 마운트하고, 아무 ServiceAccount나 쓰는 파드를 만들 수 있다. PSA가 없으면 privileged 파드로 노드까지 간다 |
 | `pods/exec`, `pods/attach` | 실행 중인 컨테이너 안에서 명령을 실행한다 |
 | `nodes/proxy` | kubelet API에 직접 닿아 감사 로그와 어드미션을 건너뛸 수 있다 |
-| `escalate`(roles) | 자기에게 없는 권한을 가진 Role을 만들거나 고친다 |
-| `bind`(rolebindings) | 자기에게 없는 권한의 Role을 남에게(자기에게도) 묶는다 |
+| Role 또는 ClusterRole의 `escalate` | Role을 생성·수정할 권한이 있을 때, 자신에게 없는 권한도 규칙에 넣을 수 있다 |
+| Role 또는 ClusterRole의 `bind` | 바인딩을 생성·수정할 권한이 있을 때, 자신에게 없는 권한을 담은 역할도 바인딩할 수 있다 |
 | `impersonate` | 다른 사용자, 그룹, ServiceAccount인 척한다 |
 | `serviceaccounts/token`의 create | 다른 ServiceAccount의 토큰을 발급받는다 |
 | persistentvolumes의 create | hostPath PV로 노드 파일 시스템에 닿는다 |
@@ -130,11 +130,13 @@ kubectl auth can-i get secrets -n payments --as=system:serviceaccount:payments:a
 kubectl get clusterrolebindings -o wide | grep cluster-admin   # cluster-admin을 가진 주체
 ```
 
-쿠버네티스는 권한 상승을 막는 장치를 RBAC에 넣어 두었다. Role을 만들거나 바인딩하려면, 원래는 그 Role이 담은 권한을 내가 이미 가지고 있어야 한다. `escalate`와 `bind`는 이 검사를 건너뛰게 해 주는 동사라서 위험하다.
+`--as`로 확인하려면 명령을 실행하는 계정에 해당 ServiceAccount로 사칭할 권한이 있어야 한다.
+
+쿠버네티스는 역할이나 바인딩을 만들 때 원래 자신이 가진 권한을 넘어설 수 있는지 검사한다. `escalate`와 `bind`는 이 검사를 건너뛰게 한다. 둘 다 Role 또는 ClusterRole에 주는 권한이다. `bind`만으로 RoleBinding을 생성할 수는 없다. [RBAC 권한 상승 방지 규칙](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#restrictions-on-role-binding-creation-or-update)
 
 > **쉬운 설명**
 >
-> Pod Security Standards는 건물의 복장 규정이다. Privileged 층은 아무 옷이나 된다. Baseline 층은 작업복(privileged)과 공구 벨트(hostPath)는 안 되지만 사복은 된다. Restricted 층은 정장에 넥타이까지(root 금지, 권한 상승 금지) 맞춰야 한다. PSA는 층 입구의 경비원인데, enforce면 돌려보내고, warn이면 '복장이 안 맞는다'고 말만 하고, audit면 장부에만 적는다. RBAC는 열쇠 꾸러미다. 문제는 열쇠 복사기(bind, escalate)와 남의 신분증(impersonate)을 같이 나눠 주면, 꾸러미에 없던 문도 열 수 있다는 것이다.
+> Pod Security Standards는 건물의 복장 규정이다. Privileged 층은 아무 옷이나 된다. Baseline 층은 작업복(privileged)과 공구 벨트(hostPath)는 안 되지만 사복은 된다. Restricted 층은 정장에 넥타이까지(root 금지, 권한 상승 금지) 맞춰야 한다. PSA는 층 입구의 경비원인데, enforce면 돌려보내고, warn이면 '복장이 안 맞는다'고 말만 하고, audit면 장부에만 적는다. RBAC는 열쇠 꾸러미다. 여기에 열쇠 복사기(bind, escalate)나 남의 신분증(impersonate)까지 나눠 주면 꾸러미에 없던 문도 열린다.
 
 ## 헷갈렸던 것들
 
@@ -144,19 +146,7 @@ kubectl get clusterrolebindings -o wide | grep cluster-admin   # cluster-admin�
 - `system:masters`는 RBAC를 건너뛴다.
 - Secret의 list와 watch도 값을 돌려준다.
 - 파드 생성 권한이 있으면 그 네임스페이스의 Secret과 ServiceAccount를 쓸 수 있다.
-- bind는 바인딩, escalate는 Role 자체에 대한 동사다.
-
-## 용어 정리
-
-| 용어 | 뜻 |
-|---|---|
-| Pod Security Standards | 파드 설정의 보안 수준을 세 단계로 정한 기준 |
-| Pod Security Admission | 네임스페이스 라벨로 PSS를 적용하는 내장 어드미션 컨트롤러 |
-| OIDC | 외부 IdP가 발급한 ID 토큰으로 사용자를 인증하는 표준 |
-| TokenRequest API | 기한과 대상이 있는 ServiceAccount 토큰을 발급하는 API |
-| 사칭 | 다른 사용자나 그룹인 척 요청을 보내는 기능 |
-| escalate, bind | RBAC 권한 상승 방지 검사를 건너뛰게 하는 동사 |
-| system:masters | RBAC를 우회하는 특수 그룹 |
+- `bind`는 역할을 연결할 때, `escalate`는 역할에 규칙을 넣을 때 적용된다.
 
 ## 복습 문제
 

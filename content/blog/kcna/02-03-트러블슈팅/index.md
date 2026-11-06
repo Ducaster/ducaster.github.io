@@ -21,15 +21,15 @@ series:
 series_order: 8
 ---
 
-Troubleshooting도 이번에 새로 이름이 붙은 항목이다. 객관식이라 명령을 직접 치기보다는 '이 증상이면 원인이 무엇이고 무엇부터 보나'를 고르는 문제가 나올 것 같아서, 증상에서 출발하는 표로 정리했다. 바탕은 CKA 트러블슈팅 정리이고, 상태 이름과 종료 코드처럼 외워야 하는 값을 더 챙겼다.
+파드가 안 뜨면 습관처럼 로그부터 봤는데, 컨테이너가 시작도 못 했으면 로그는 비어 있다. 노드 배정, 이미지 받기, 컨테이너 시작 중 어디서 멈췄는지부터 가려야 한다. CKA 트러블슈팅 때 쓰던 확인 순서를 바탕으로 정리했고, kind로 일부러 고장을 내 본 실습도 붙였다.
 
 ## 요약
 
 - 보는 순서는 `kubectl get`(상태), `describe`(Events), `logs`(`--previous`), `exec`나 `debug`다.
-- Pending은 노드를 못 찾은 상태다. 자원 부족, nodeSelector나 어피니티 불일치, 테인트, PVC 미바인딩이 흔한 원인이고 describe의 FailedScheduling에 이유가 나온다.
-- ImagePullBackOff는 이미지 이름이나 태그 오타, 비공개 레지스트리 인증 문제다.
+- `Pending` phase에는 노드를 기다리는 시간과 노드에서 컨테이너를 준비하는 시간이 모두 포함된다. 노드가 없고 Events에 `FailedScheduling`이 보이면 스케줄링 조건부터 본다.
+- `ImagePullBackOff`는 이미지를 받지 못해 재시도 간격을 늘리는 중이라는 뜻이다. 이름, 태그, 레지스트리 권한과 연결을 확인한다.
 - CrashLoopBackOff는 컨테이너가 계속 죽어서 재시작을 기다리는 상태다. 원인은 이전 컨테이너 로그(`--previous`)와 종료 코드에서 찾는다.
-- OOMKilled는 메모리 limits를 넘은 것이다. 종료 코드는 137이다.
+- `OOMKilled`는 메모리 부족으로 컨테이너가 종료됐다는 뜻이다. 메모리 limit과 노드 상태를 함께 확인한다. 종료 코드 137만으로는 OOM인지 알 수 없다.
 - 파드는 Running인데 트래픽이 안 가면 readiness, 서비스 셀렉터, targetPort, NetworkPolicy 순서로 본다.
 - Events는 기본 1시간만 남는다.
 
@@ -55,16 +55,18 @@ kubectl port-forward svc/api 8080:80           # 내 PC에서 서비스로 바�
 
 | 보이는 상태 | 뜻 | 흔한 원인 | 먼저 볼 것 |
 |---|---|---|---|
-| Pending | 노드가 정해지지 않았다 | requests가 커서 들어갈 노드가 없다, nodeSelector나 어피니티 불일치, 테인트, PVC가 Pending | describe의 Events(FailedScheduling) |
+| Pending, NODE 없음 | 아직 스케줄링하지 못했을 가능성이 크다 | requests를 만족하는 노드가 없다, 셀렉터·어피니티 불일치, 테인트, PVC가 Pending | `PodScheduled` 조건과 Events의 `FailedScheduling` |
 | ContainerCreating이 오래 감 | 노드는 정해졌는데 컨테이너를 못 만든다 | 볼륨 마운트 실패, CNI 문제, 큰 이미지 | describe의 Events |
 | ErrImagePull, ImagePullBackOff | 이미지를 못 받아서 재시도를 기다린다 | 이름이나 태그 오타, 비공개 레지스트리 인증(imagePullSecrets), 레지스트리 접근 불가 | describe의 Events |
 | CreateContainerConfigError | 컨테이너 설정을 만들 수 없다 | 참조한 ConfigMap, Secret, 키가 없다 | describe의 Events |
 | CrashLoopBackOff | 컨테이너가 계속 종료되어 재시작을 기다린다 | 설정 오류, 잘못된 명령, 의존 서비스 없음, liveness 실패 | `logs --previous`, describe의 Last State |
 | Running인데 READY 0/1 | 떠 있지만 준비되지 않았다 | readiness 프로브 실패 | describe의 Events(Readiness probe failed) |
 | Terminating이 오래 감 | 지우는 중에 멈췄다 | finalizer가 남음, 노드 연결 끊김 | `get -o yaml`의 finalizers |
-| Evicted, Failed | 노드 압박으로 쫓겨났다 | 메모리나 디스크 부족 | describe node의 Conditions |
+| Evicted | kubelet이 파드를 축출했다 | 메모리나 디스크 부족 | Pod의 메시지와 Node Conditions |
 
-describe의 Last State에 `Reason: OOMKilled`가 보이면 메모리 limits를 넘은 것이다. 노드 전체 메모리가 모자라서 kubelet이 내보낸 경우(Evicted)와 구분한다.
+`kubectl get pods`의 `STATUS`는 사람이 보기 좋게 만든 열이다. `ImagePullBackOff`가 보이는 파드의 `.status.phase`는 `Pending`일 수 있다. `kubectl get pod <이름> -o yaml`에서 phase와 `PodScheduled` 조건을 따로 보고, `describe`의 Events에서 어느 단계가 실패했는지 확인한다. [Pod 수명 주기](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/)
+
+컨테이너의 Last State에 `OOMKilled`가 있으면 메모리 limit 초과나 노드 전체의 OOM을 확인한다. 노드 압박을 감지한 kubelet이 파드를 먼저 내보낸 경우에는 파드에 `Evicted`가 남는다.
 
 CrashLoopBackOff 상태에서 재시작 간격은 10초에서 시작해 두 배씩 늘어 최대 5분까지 간다. 컨테이너가 10분 동안 문제없이 돌면 처음으로 돌아간다. v1.35부터는 노드마다 kubelet 설정(`crashLoopBackOff.maxContainerRestartPeriod`)으로 최대 간격을 1초에서 300초 사이로 줄일 수 있다(beta). 기본값 자체를 1초 시작, 최대 60초로 줄이는 기능은 아직 alpha라서 기본으로 꺼져 있다.
 
@@ -83,12 +85,14 @@ _재시작마다 대기 시간이 두 배로 늘다가 5분에서 멈춘다_
 
 ## 3. 서비스로 트래픽이 안 갈 때
 
+예를 들어 `web` 네임스페이스의 파드에서 `shop`의 `api` Service를 부른다고 하자. 호출 파드에 `nslookup`이 있으면 `kubectl exec -n web <호출-파드> -- nslookup api.shop`으로 이름부터 확인한다. 아래 흐름에서 `api`와 `shop`은 Service 이름과 네임스페이스다.
+
 {{< mermaid >}}
 flowchart TB
   A["1. 이름이 풀리나<br>debug 파드에서 nslookup api.shop"] --> B["2. 서비스가 있나, 포트가 맞나<br>kubectl get svc api -n shop"]
-  B --> C["3. 엔드포인트가 있나<br>kubectl get endpointslices -l kubernetes.io/service-name=api"]
-  C --> D["4. 비어 있으면<br>셀렉터와 파드 라벨, 파드 READY"]
-  D --> E["5. 있으면<br>targetPort가 컨테이너가 듣는 포트인가"]
+  B --> C["3. 엔드포인트가 있나<br>kubectl get endpointslices -n shop -l kubernetes.io/service-name=api"]
+  C --> D["4. 준비된 엔드포인트가 없으면<br>셀렉터와 파드 라벨, 파드 READY"]
+  D --> E["5. 준비된 엔드포인트가 있으면<br>targetPort가 컨테이너가 듣는 포트인가"]
   E --> F["6. 그래도 안 되면<br>NetworkPolicy, 앱 로그"]
 {{< /mermaid >}}
 
@@ -100,16 +104,60 @@ flowchart TB
 |---|---|
 | 노드 NotReady | kubelet이 멈췄거나(`journalctl -u kubelet`), 컨테이너 런타임이 멈췄거나(`crictl ps`), CNI가 없거나, 인증서가 만료됐다 |
 | 노드 Conditions에 MemoryPressure, DiskPressure, PIDPressure | 자원 부족. kubelet이 파드를 내보내기 시작한다 |
-| kubectl 명령이 전부 connection refused | API 서버가 안 떠 있다. kubeadm 클러스터면 스태틱 파드 매니페스트 오류를 의심한다 |
-| 새 파드가 Pending인데 FailedScheduling 이벤트조차 없다 | 스케줄러가 멈췄다 |
-| Deployment를 만들었는데 ReplicaSet이나 파드가 안 생긴다 | 컨트롤러 매니저가 멈췄다 |
+| kubectl 명령이 전부 connection refused | kubeconfig의 현재 컨텍스트와 서버 주소부터 확인한다. 주소가 맞으면 API 서버가 해당 포트에서 듣는지, kubeadm 환경이라면 스태틱 파드가 떴는지 확인한다 |
+| 새 파드에 노드가 배정되지 않았고 FailedScheduling 이벤트도 없다 | 스케줄러 상태, 파드의 schedulerName과 schedulingGates를 확인한다 |
+| Deployment를 만들었는데 ReplicaSet이나 파드가 안 생긴다 | Deployment와 ReplicaSet의 Events에서 생성 거절을 먼저 확인한다. ReplicaSet도 생기지 않았다면 컨트롤러 매니저 상태도 본다 |
 | `kubectl top`이 Metrics API를 찾을 수 없다고 한다 | metrics-server가 없다 |
 
-노드가 끊기면 `node.kubernetes.io/unreachable` 테인트가 붙고, 파드는 기본 300초 뒤에 다른 노드로 옮겨 간다.
+노드가 끊기면 `node.kubernetes.io/unreachable` 테인트가 붙는다. 기본 톨러레이션은 300초라, 이후 축출이 진행될 수 있다. Deployment가 관리하는 파드라면 컨트롤러가 대체 파드를 만든다.
 
-> **쉬운 설명**
->
-> 자동차 고장 진단과 같다. `kubectl get`은 계기판 경고등을 보는 것이고, `describe`는 정비 기록(최근에 무슨 일이 있었나)이다. `logs`는 블랙박스 영상인데, 차가 이미 다시 시동이 걸렸으면 사고 직전 영상(`--previous`)을 따로 꺼내야 한다. `exec`는 보닛을 열어 보는 것이고, `debug`는 정비 기사가 장비를 들고 옆자리에 타는 것이다. 정비 기록은 1시간만 보관되니 빨리 봐야 한다.
+## 실습: 작은 서비스를 띄우고 고쳐 보기
+
+표만 봐서는 상태가 어떻게 바뀌는지 그려지지 않아서, [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)로 실습용 클러스터를 띄우고 일부러 고장을 내 봤다. Docker와 `kubectl`이 있으면 된다. 명령마다 `--context`를 붙여서 다른 클러스터를 건드리지 않게 했다.
+
+```bash
+kind create cluster --name kcna-lab --wait 2m
+```
+
+Deployment로 nginx를 띄우고, 다른 파드에서 Service 이름으로 접속되는지 봤다.
+
+```bash
+kubectl --context kind-kcna-lab create deployment web --image=nginx:1.28-alpine
+kubectl --context kind-kcna-lab expose deployment web --port=80 --target-port=80
+kubectl --context kind-kcna-lab rollout status deployment/web --timeout=120s
+kubectl --context kind-kcna-lab get deployment,pods,service -l app=web
+kubectl --context kind-kcna-lab run probe --image=busybox:1.37 --restart=Never --command -- wget -qO- http://web
+kubectl --context kind-kcna-lab wait --for=jsonpath='{.status.phase}'=Succeeded pod/probe --timeout=90s
+kubectl --context kind-kcna-lab logs pod/probe
+```
+
+마지막 명령에서 nginx 기본 페이지의 HTML이 나오면, `probe` 파드가 `web`을 이름으로 찾아 Service를 거쳐 접속한 것이다. `wait`가 시간 초과하면 `kubectl --context kind-kcna-lab describe pod/probe`로 이유를 본다.
+
+그다음 없는 이미지 태그로 바꿔 봤다.
+
+```bash
+kubectl --context kind-kcna-lab set image deployment/web nginx=nginx:kcna-lab-no-such-tag
+kubectl --context kind-kcna-lab get pods -l app=web -o wide
+kubectl --context kind-kcna-lab describe pods -l app=web
+kubectl --context kind-kcna-lab get pods -l app=web \
+  -o 'custom-columns=NAME:.metadata.name,NODE:.spec.nodeName,PHASE:.status.phase,WAITING:.status.containerStatuses[0].state.waiting.reason'
+```
+
+몇 초 기다리면 새 파드는 **NODE가 채워져 있는데도** phase가 `Pending`이고, 대기 이유가 `ErrImagePull`에서 `ImagePullBackOff`로 바뀐다. Events에는 이미지 가져오기 실패가 남는다. 노드는 이미 정해졌으니 스케줄링이나 앱 로그를 볼 상황이 아니다. 기존 파드는 롤링 업데이트 중에도 계속 살아 있다.
+
+되돌릴 때는 `rollout undo`를 쓰고 `rollout status`가 성공하는지까지 봤다. 기존 파드가 계속 응답하고 있어서 Service 접속만으로는 복구됐는지 알 수 없다.
+
+```bash
+kubectl --context kind-kcna-lab rollout undo deployment/web
+kubectl --context kind-kcna-lab rollout status deployment/web --timeout=120s
+kubectl --context kind-kcna-lab get pods -l app=web
+```
+
+다 본 뒤에는 클러스터를 지웠다.
+
+```bash
+kind delete cluster --name kcna-lab
+```
 
 ## 헷갈렸던 것들
 
@@ -117,21 +165,9 @@ flowchart TB
 - 죽기 전 컨테이너의 로그는 `--previous`로 본다.
 - Events는 기본 1시간 뒤 사라진다.
 - `kubectl top`은 metrics-server가 있어야 된다.
-- 스케줄러가 멈추면 FailedScheduling 이벤트도 안 남는다.
-- 엔드포인트가 비어 있으면 셀렉터와 readiness부터 본다.
+- `FailedScheduling`이 없다고 바로 스케줄러 장애로 판단하지 않는다. 파드가 배정됐는지 먼저 확인한다.
+- Service에 쓸 수 있는 엔드포인트가 없으면 셀렉터와 readiness부터 본다.
 - 137은 OOM만 뜻하지 않는다. SIGKILL로 끝난 모든 경우다.
-
-## 용어 정리
-
-| 용어 | 뜻 |
-|---|---|
-| Events | 쿠버네티스 구성 요소가 남기는 사건 기록. 기본 1시간 보관 |
-| CrashLoopBackOff | 컨테이너가 반복해서 종료되어 재시작을 기다리는 상태 |
-| ImagePullBackOff | 이미지 받기에 실패해 재시도를 기다리는 상태 |
-| OOMKilled | 메모리 limits를 넘어 커널이 컨테이너를 종료한 이유 표시 |
-| 임시 컨테이너 | 실행 중인 파드에 디버깅용으로 붙이는 컨테이너 |
-| metrics-server | 노드와 파드의 CPU, 메모리 사용량을 Metrics API로 제공하는 애드온 |
-| finalizer | 오브젝트를 지우기 전에 끝내야 할 작업 표시 |
 
 ## 복습 문제
 
@@ -153,7 +189,7 @@ flowchart TB
 
 - A. The image could not be pulled.
 - B. The liveness probe timed out.
-- C. The container exceeded its memory limit.
+- C. The kernel killed the container in an out-of-memory situation.
 - D. The node ran out of disk space.
 
 **4.** A Service has no endpoints, even though Pods that seem to match it are running. What should you check first?
@@ -188,8 +224,8 @@ flowchart TB
 
 1. **D** 재시작된 지금 컨테이너가 아니라 죽기 전 컨테이너의 로그를 봐야 해서 `--previous`다.
 2. **B** 스케줄러는 requests로 판단한다. limits를 올려도 Pending은 풀리지 않는다.
-3. **C** 137은 128+9(SIGKILL)이고, Reason이 OOMKilled면 메모리 limits 초과다.
-4. **A** 셀렉터가 틀리거나 파드가 Ready가 아니면 엔드포인트가 빈다.
+3. **C** 137은 SIGKILL로 끝났다는 표시이고, `OOMKilled`가 메모리 부족으로 종료됐다는 단서다. 이 정보만으로 컨테이너 limit 초과와 노드 전체 OOM을 구별할 수는 없다.
+4. **A** 셀렉터가 맞는 파드가 있는지와 EndpointSlice의 `ready` 상태를 본다. 일치하는 파드가 없거나 준비된 엔드포인트가 없으면 기본 설정의 Service는 그 파드에 트래픽을 보내지 않는다.
 5. **D** 받기에 실패하면 ErrImagePull, 재시도를 기다리는 동안은 ImagePullBackOff다.
 6. **C** `kubectl top`은 metrics-server가 제공하는 Metrics API를 읽는다.
 7. **B** 임시 컨테이너를 붙인다. 셸이 없으니 exec는 실패한다.

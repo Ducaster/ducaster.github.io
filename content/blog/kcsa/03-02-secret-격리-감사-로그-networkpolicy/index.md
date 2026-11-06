@@ -20,7 +20,7 @@ series:
 series_order: 5
 ---
 
-Kubernetes Security Fundamentals의 나머지 네 항목, Secrets, Isolation and Segmentation, Audit Logging, Network Policy다. 감사 로그는 CKA 때 한 번도 켜 본 적이 없어서 수준(level)과 단계(stage) 이름부터 외웠다. NetworkPolicy는 KCNA에서 기본만 봤으니, 여기서는 기본 거부를 걸었을 때 DNS가 끊기는 문제와 셀렉터의 AND, OR 차이처럼 실제로 걸려 넘어지는 지점을 봤다.
+기본 거부 정책을 걸면 앱은 데이터베이스 포트보다 먼저 DNS에서 막힌다. 필요한 통신만 남기는 NetworkPolicy와, 민감한 값은 빼고 누가 무엇을 했는지 남기는 감사 로그를 이 글에 정리했다.
 
 ## 요약
 
@@ -112,7 +112,7 @@ rules:
 - level: Metadata                   # 나머지 전부
 ```
 
-규칙은 위에서부터 비교해서 처음 맞는 규칙의 수준을 쓴다. 그래서 구체적인 규칙을 위에, 넓은 기본 규칙을 맨 아래에 둔다. Secret을 Request 이상으로 남기면 Secret 값이 감사 로그에 그대로 적힌다. 로그 파일은 `--audit-log-maxage`, `--audit-log-maxbackup`, `--audit-log-maxsize`로 돌린다. 감사 로그는 공격 흔적을 찾는 근거라서 클러스터 밖으로 보내 고칠 수 없게 보관하는 게 좋다.
+규칙은 위에서부터 비교해서 처음 맞는 규칙의 수준을 쓴다. 그래서 구체적인 규칙을 위에, 넓은 기본 규칙을 맨 아래에 둔다. `Request`는 Secret 생성·수정처럼 요청 본문에 값이 있을 때 그 값을 남길 수 있다. `RequestResponse`는 조회 응답의 값까지 남길 수 있다. 값을 빼고 접근 기록만 남기려면 `Metadata`로 설정한다. 로그 파일은 `--audit-log-maxage`, `--audit-log-maxbackup`, `--audit-log-maxsize`로 돌린다. 감사 로그는 공격 흔적을 찾는 근거라서 클러스터 밖으로 보내 고칠 수 없게 보관하는 게 좋다.
 
 ## 4. NetworkPolicy
 
@@ -164,13 +164,9 @@ from이나 to 안에서 셀렉터를 어떻게 적느냐에 따라 뜻이 갈린
 
 - NetworkPolicy는 네임스페이스 리소스다. 클러스터 전체에 한 번에 거는 기능은 표준 NetworkPolicy에 없다.
 - 서비스 이름이 아니라 파드 라벨, 네임스페이스 라벨, IP 대역(ipBlock)으로 고른다.
-- ipBlock은 클러스터 밖 주소용이다. 파드 IP는 바뀌어서 ipBlock으로 고르면 안 된다. `except`로 일부를 뺄 수 있다. 메타데이터 엔드포인트(`169.254.169.254/32`)를 빼는 데 쓴다.
+- `ipBlock`은 주로 클러스터 밖 주소 대역을 허용할 때 쓴다. `except`로 메타데이터 주소(예: `169.254.169.254/32`)를 그 대역에서 뺄 수 있다. 이 예외는 해당 허용 규칙에만 적용되므로, 같은 파드에 다른 정책이 그 주소를 허용하면 통신할 수 있다.
 - 응답 트래픽은 따로 허용하지 않아도 된다. 연결 상태를 따라 허용된다.
 - 실제로 막는 건 CNI다. 지원하지 않는 CNI에서는 아무 효과가 없다.
-
-> **쉬운 설명**
->
-> 감사 로그는 건물 CCTV다. 기본으로는 꺼져 있고, 어떤 문을 얼마나 자세히 찍을지(수준)를 정해야 켜진다. 금고 앞(Secret)을 고화질로 찍으면 화면에 금고 비밀번호까지 찍히니, 누가 언제 들어갔는지(Metadata)만 남긴다. NetworkPolicy 기본 거부는 모든 출입문을 잠그는 것인데, 그러면 안내 데스크(DNS)에도 못 가서 길을 못 찾는다. 안내 데스크 가는 문은 따로 열어 둔다.
 
 ## 헷갈렸던 것들
 
@@ -181,19 +177,6 @@ from이나 to 안에서 셀렉터를 어떻게 적느냐에 따라 뜻이 갈린
 - 기본 거부 이그레스를 걸면 DNS가 끊긴다.
 - 한 항목 안의 namespaceSelector와 podSelector는 AND, 따로 적으면 OR다.
 - kubelet이 바꿀 수 없는 노드 라벨은 `node-restriction.kubernetes.io/` 접두어다.
-
-## 용어 정리
-
-| 용어 | 뜻 |
-|---|---|
-| 감사 정책 | 어떤 요청을 어느 수준으로 기록할지 정한 규칙 목록 |
-| 감사 수준 | None, Metadata, Request, RequestResponse |
-| 감사 단계 | 요청 처리 중 이벤트가 생기는 시점 |
-| 감사 백엔드 | 감사 이벤트를 보내는 곳. 로그 파일이나 웹훅 |
-| 기본 거부 | 모든 트래픽을 막고 필요한 것만 여는 방식 |
-| ipBlock | NetworkPolicy에서 CIDR로 대상을 고르는 방법 |
-| External Secrets Operator | 외부 비밀 저장소의 값을 Secret으로 동기화하는 도구 |
-| Secrets Store CSI Driver | 외부 비밀 저장소의 값을 볼륨으로 마운트하는 CSI 드라이버 |
 
 ## 복습 문제
 
