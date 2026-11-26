@@ -41,6 +41,9 @@ AWS SAA를 공부할 때 VPC 하나에 서브넷을 나눠 쓰는 그림에 익�
 | 스토리지망 | 공유 파일 시스템과 노드 사이 |
 | 연산 패브릭(compute fabric) | 학습 중 GPU끼리 통신. RDMA를 쓰는 InfiniBand나 RoCE |
 
+![GPU 클러스터의 네트워크 구성 예](./attachments/ncp-aio-cluster-networks.png)
+_DGX처럼 GPU가 8개 들어간 노드를 기준으로 단순화했다. 점이 찍힌 곳만 연결이다. BCM 기본 구성(Type 1 네트워크)에서는 헤드 노드가 internalnet으로 PXE 부팅을 내주고, 노드가 사내망으로 나가는 트래픽도 헤드 노드를 거친다_
+
 RDMA(Remote Direct Memory Access)는 한 서버의 NIC가 다른 서버의 메모리에 CPU와 커널을 거치지 않고 직접 읽고 쓰는 방식이다. 수천 개 GPU가 매 스텝 통신하는 all-reduce에서는 이 차이가 학습 시간에 그대로 나타난다.
 
 ## 2. InfiniBand와 RoCE
@@ -50,6 +53,9 @@ RDMA(Remote Direct Memory Access)는 한 서버의 NIC가 다른 서버의 메�
 | 위치 | 전용 스위치와 어댑터로 만든 별도 패브릭 | 이더넷 위에서 RDMA |
 | 관리 | 서브넷 매니저가 패브릭을 구성한다 | 손실 없는 이더넷 설정(PFC, ECN 등)이 필요하다 |
 | 대표 도구 | ibstat, ibdev2netdev, UFM | 이더넷 스위치 설정과 같은 진단 도구 |
+
+![InfiniBand 어댑터와 배선](./attachments/ncp-aio-ib-hca-cabling.jpg)
+_왼쪽은 ConnectX-2 칩을 쓴 오래된 QDR 어댑터다. 포트 규격은 세대마다 바뀌었지만(요즘 ConnectX-7은 OSFP나 QSFP112) PCIe로 서버에 꽂고 포트에 케이블을 받는 구조는 같다. 오른쪽은 노드마다 InfiniBand 케이블이 하나씩 꽂힌 랙이다. 사진: 왼쪽 [Dmitry Nosachev](https://commons.wikimedia.org/wiki/File:Supermicro_AOC-UIBQ-M2_dual_port_InfiniBand_HCA.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), 오른쪽 [Javils00](https://commons.wikimedia.org/wiki/File:Cables_Infiniband.jpg), [CC0](https://creativecommons.org/publicdomain/zero/1.0/). 두 사진의 크기를 맞춰 나란히 붙이고 이름을 달았다_
 
 InfiniBand에서 가장 먼저 외워 둘 게 서브넷 매니저다. 서브넷 매니저가 패브릭의 주소(LID)를 나눠 주고 경로를 계산해야 포트가 Active가 된다. 스위치에 내장되거나, 호스트에서 OpenSM으로 돌리거나, NVIDIA UFM이 맡는다.
 
@@ -78,6 +84,21 @@ Magnum IO는 하나의 제품이 아니고 GPU 입출력을 빠르게 하는 기
 | UCX, HPC-X | MPI 같은 HPC 통신을 받쳐 주는 통신 프레임워크와 그 묶음 |
 | SHARP | 스위치 안에서 reduce 연산을 해 노드 사이 오가는 데이터를 줄인다(in-network compute) |
 
+GPUDirect RDMA가 없으면 GPU 데이터가 보내는 쪽과 받는 쪽의 CPU 메모리를 한 번씩 거친다.
+
+{{< mermaid >}}
+flowchart TB
+  subgraph r1["GPUDirect RDMA 없이"]
+    direction LR
+    A1["노드 A<br>GPU 메모리"] --> A2["노드 A<br>CPU 메모리"] --> A3["NIC"] -->|네트워크| B3["NIC"] --> B2["노드 B<br>CPU 메모리"] --> B1["노드 B<br>GPU 메모리"]
+  end
+  subgraph r2["GPUDirect RDMA로"]
+    direction LR
+    C1["노드 A<br>GPU 메모리"] --> C3["NIC"] -->|네트워크| D3["NIC"] --> D1["노드 B<br>GPU 메모리"]
+  end
+  r1 ~~~ r2
+{{< /mermaid >}}
+
 여러 노드 학습이 유난히 느릴 때 확인하는 순서를 이렇게 적었다.
 
 ```bash
@@ -100,6 +121,9 @@ NCCL 로그에 NET/Socket이 보이면 InfiniBand 장치를 못 찾았거나 쓰
 | 공유 고성능 파일 시스템 | 데이터셋, 체크포인트 | 여러 노드가 동시에 읽고 쓰는 대역폭, 메타데이터 처리량 |
 | NFS 같은 일반 공유 스토리지 | 홈 디렉터리, 코드, 설정 | 용량보다 관리 편의 |
 | 오브젝트 스토리지 | 원본 데이터, 장기 보관 | 학습 전에 빠른 층으로 옮겨 둔다 |
+
+![TSUBAME 3.0의 스토리지 랙](./attachments/ncp-aio-ddn-storage.jpg)
+_TSUBAME 3.0 슈퍼컴퓨터(도쿄공업대학, 2018년 촬영)의 스토리지 랙으로, DDN 장비가 들어 있다. 공유 고성능 파일 시스템 층은 이렇게 계산 노드와 따로 랙 단위로 들어간다. 사진: [Kestrel](https://commons.wikimedia.org/wiki/File:TSUBAME_3.0_PA075069_01.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)_
 
 KCNA 스토리지 글에서 본 ReadWriteMany가 여기서 실제 요구 사항이 된다. 여러 노드가 같은 볼륨을 동시에 써야 해서 공유 파일 시스템이 필요하다.
 
@@ -133,6 +157,23 @@ flowchart TB
 ## 5. BlueField DPU와 DOCA
 
 DPU(Data Processing Unit)는 고속 NIC에 Arm 코어와 가속기를 붙인 장치다. 네트워크, 스토리지, 보안 처리를 호스트 CPU 대신 맡는다. DPU 안에서 리눅스가 따로 돈다. 시험 주제의 'DPU-Arm'이 이 Arm 쪽 운영 체제를 가리킨다. DOCA는 DPU용 SDK와 서비스 묶음이다. DOCA Firefly(시간 동기화), BlueMan(DPU 상태를 보는 웹 대시보드), DOCA Telemetry Service 같은 서비스가 컨테이너로 나온다.
+
+{{< mermaid >}}
+flowchart TB
+  H["호스트 서버<br>x86 CPU, GPU, 호스트 OS"]
+  subgraph dpu["BlueField DPU"]
+    direction LR
+    N["ConnectX NIC"] <--> K
+    subgraph arm["Arm 코어에서 도는 리눅스 (DPU-Arm)"]
+      direction TB
+      K["standalone kubelet<br>/etc/kubelet.d를 본다"] --> P["DOCA 서비스 파드<br>Firefly, BlueMan 등"]
+    end
+  end
+  H <-->|PCIe| dpu
+  dpu <-->|네트워크| S["스위치"]
+{{< /mermaid >}}
+
+BlueField 실물 사진은 [NVIDIA 제품 페이지](https://www.nvidia.com/en-us/networking/products/data-processing-unit/)에서 봤다.
 
 DOCA 서비스를 DPU에 띄우는 방식을 읽다가 반가웠다. DPU에 standalone kubelet이 돌고, 이 kubelet이 /etc/kubelet.d 폴더를 지켜본다. 서비스 YAML을 그 폴더에 넣으면 kubelet이 NGC에서 이미지를 받아 파드를 띄운다. API 서버 없이 kubelet이 파일을 보고 파드를 띄우는 구조라서, CKA에서 외운 스태틱 파드(/etc/kubernetes/manifests)와 같다. 문서에는 이 배포 방식이 아직 alpha라고 적혀 있다.
 

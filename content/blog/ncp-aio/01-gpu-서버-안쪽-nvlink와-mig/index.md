@@ -37,7 +37,16 @@ series_order: 2
 | HGX | 서버 제조사가 자기 서버에 넣는 NVIDIA GPU 보드(예: HGX A100 8-GPU) |
 | DGX | NVIDIA가 직접 만든 완제품 서버. 안에 HGX와 같은 GPU 보드가 들어 있다 |
 
+![PCIe 카드와 HGX 보드](./attachments/ncp-aio-pcie-vs-hgx.jpg)
+_왼쪽 PCIe 카드는 아래쪽 금색 단자를 서버의 PCIe 슬롯에 꽂는다. 오른쪽 HGX B200 보드는 큰 방열판 여덟 개 아래에 GPU가 SXM 모듈로 하나씩 얹혀 있고, 보드째 서버에 들어간다. 사진: 왼쪽 [极客湾Geekerwan](https://commons.wikimedia.org/wiki/File:NVIDIA_H100_%28%E6%9E%81%E5%AE%A2%E6%B9%BEGeekerwan%29_014.png), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), 오른쪽 [Pokiiri](https://commons.wikimedia.org/wiki/File:Nvidia_DGX-B200-HGX.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). 두 사진의 크기를 맞춰 나란히 붙이고 이름을 달았다_
+
+![DGX-1이 들어간 랙](./attachments/ncp-aio-dgx1-rack.jpg)
+_2018년 전시 장비. 아래쪽 금색 서버들이 DGX-1이고, 위에 NetApp 올플래시 스토리지와 100GbE 스위치가 같이 들어 있다. 사진: [Qdrddr](https://commons.wikimedia.org/wiki/File:NetApp_ONTAP_AI.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)_
+
 Fabric Manager 가이드에 나온 예를 보면, DGX A100과 HGX A100 8-GPU 보드는 A100 8개와 2세대 NVSwitch 6개로 이뤄져 있다. GPU마다 보드 위 NVSwitch 각각에 NVLink가 연결돼서, 어느 GPU 쌍이든 같은 대역폭으로 통신한다.
+
+![HGX A100 8-GPU 보드의 NVLink 연결](./attachments/ncp-aio-hgx-a100-nvswitch.png)
+_GPU마다 NVLink 12개를 NVSwitch 6개에 2개씩 나눠 잇는다. GPU끼리 직접 잇는 선은 없고 모두 스위치를 거쳐서, 어느 두 GPU를 골라도 거리가 같다(topo -m에서 NV12)_
 
 ## 2. GPU끼리 얼마나 가까운가: nvidia-smi topo -m
 
@@ -55,6 +64,9 @@ nvidia-smi topo -m      # GPU, NIC 사이 연결 행렬과 CPU, NUMA 친화도
 | PHB | PCIe 호스트 브리지(보통 CPU)를 지난다 |
 | NODE | 같은 NUMA 노드 안에서 호스트 브리지 사이를 지난다 |
 | SYS | CPU 소켓 사이 연결(QPI, UPI)까지 지난다 |
+
+![nvidia-smi topo -m 연결 표시 여섯 가지](./attachments/ncp-aio-topo-levels.png)
+_가상의 2소켓 서버 하나로 여섯 경로를 그렸다. HB는 PCIe 호스트 브리지, SW는 PCIe 스위치다. 아래 칸으로 갈수록 지나는 장치가 늘어난다. PXB 칸과 NV# 칸은 같은 GPU0과 GPU1 사이라서, 두 GPU가 NVLink로도 이어져 있으면 topo -m은 NV#로 보여 준다_
 
 GPU 사이만 보는 게 아니다. 표에 NIC도 같이 나와서, 노드 사이 통신을 할 GPU와 NIC가 PIX처럼 가까이 붙어 있는지 확인할 때 쓴다. 다음 글의 GPUDirect RDMA가 이 거리에 크게 좌우된다.
 
@@ -95,6 +107,11 @@ flowchart TB
   C -->|예| E["nvidia-smi -q의 Fabric 상태,<br>NVLink, NVSwitch 오류 확인"]
 {{< /mermaid >}}
 
+Blackwell 세대에서는 NVSwitch가 서버 밖으로 나온다. GB200 NVL72는 NVLink 스위치를 별도 트레이로 만들어 랙에 넣고, 랙 하나의 GPU 72개를 하나의 NVLink 도메인으로 묶는다.
+
+![GB200 NVL72 랙](./attachments/ncp-aio-gb200-nvl72.jpg)
+_사진: [Pokiiri](https://commons.wikimedia.org/wiki/File:Nvidia_DGX_GB200.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). 크기를 줄이고 오른쪽에 설명을 덧붙였다_
+
 ## 4. MIG: GPU 하나를 나눠 쓰기
 
 MIG(Multi-Instance GPU)는 Ampere 세대부터(compute capability 8.0 이상) 들어간 기능이다. GPU 하나를 최대 7개의 GPU 인스턴스로 나누고, 인스턴스마다 온칩 크로스바 포트, L2 캐시, 메모리 컨트롤러, DRAM 주소 버스를 따로 준다. 그래서 한 인스턴스의 작업이 다른 인스턴스의 지연이나 처리량에 영향을 주지 않는다.
@@ -122,18 +139,8 @@ MIG(Multi-Instance GPU)는 Ampere 세대부터(compute capability 8.0 이상) �
 | 4g.40gb | 4/8 | 4/7 | 1 |
 | 7g.80gb | 전체 | 7/7 | 1 |
 
-{{< mermaid >}}
-flowchart LR
-  G["H100 80GB<br>MIG 모드 켜짐"] --> GI1["GI 3g.40gb"]
-  G --> GI2["GI 2g.20gb"]
-  G --> GI3["GI 1g.10gb"]
-  G --> GI4["GI 1g.10gb"]
-  GI1 --> CI1["CI 2c"]
-  GI1 --> CI2["CI 1c"]
-  GI2 --> CI3["CI 2c"]
-  GI3 --> CI4["CI 1c"]
-  GI4 --> CI5["CI 1c"]
-{{< /mermaid >}}
+![H100 80GB MIG 슬라이스 배치 예](./attachments/ncp-aio-mig-slices.png)
+_H100 80GB를 3g.40gb, 2g.20gb, 1g.10gb 두 개로 나눈 예. 메모리 한 칸이 10GB라서 프로필 이름 뒤쪽 숫자가 메모리 크기다. 실제로 어느 칸을 쓰는지는 GPU의 배치 규칙(nvidia-smi mig -lgipp)이 정하고, 그림은 순서대로 붙여 그렸다_
 
 설정 순서는 가이드의 예를 따라 적었다.
 
